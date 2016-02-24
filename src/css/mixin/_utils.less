@@ -1,0 +1,23 @@
+.middle-outter{
+  display: table;
+  width: 100%;
+  height: inherit;
+}
+.middle-inner{
+  display: table-cell;
+  vertical-align: middle;
+  height: inherit;
+}
+.middle{
+  height: inherit;
+  display: inline-block;
+  vertical-align: middle;
+  &:after{
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+    width: 0;
+    overflow: hidden;
+    height: 100%;
+  }
+}
