@@ -6,7 +6,7 @@ var querystrings = require('querystrings');
  * search: {string} '?a=1&b=2&c=3'
  * query: {json} { a:1, b: 2, c:3 }
  */
-exports.rebuildURI = function(url){
+exports.$rebuildURI = function(url){
     var sch = url.indexOf('?');
     var path, search = '', query = {};
 

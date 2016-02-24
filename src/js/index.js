@@ -11,7 +11,7 @@ simplize.ready(function(){
                     components: {
                         as: {
                             name: 'as',
-                            template: '<p>as</p>'
+                            template: '<p>as component</p>'
                         }
                     }
                 }
@@ -34,7 +34,8 @@ simplize.ready(function(){
             }
         }
     });
-    var indexBrowser = app.browser('index');
-    var aWebview = indexBrowser.webview('a');
-    console.log(indexBrowser, aWebview)
+    var indexBrowser = app.$browser('index');
+    var aWebview = indexBrowser.$webview('a');
+    var headbar = indexBrowser.$headbar;
+    console.log(indexBrowser, aWebview, app, headbar)
 });

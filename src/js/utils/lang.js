@@ -46,3 +46,5 @@ exports.slice = Array.prototype.slice;
 exports.removeChild = function(node){
     node.parentNode.removeChild(node);
 }
+
+exports.noop = function(){}

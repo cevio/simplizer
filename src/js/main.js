@@ -3,6 +3,7 @@
  */
 var Vue = require('vue');
 var domReady = require('domready');
+var querystrings = require('querystrings');
 
 /**
  *  load deps.
@@ -20,6 +21,7 @@ var webviews = require('./application/webviews');
 module.exports = simplize;
 
 function simplize(options){
+    simplize.init();
     var components = fixConfigs(options);
     components.toolbar = toolbar.component;
     return new Vue({
@@ -27,7 +29,10 @@ function simplize(options){
         data: resource,
         components: components,
         methods: {
-            browser: browser.get
+            $browser: browser.get
+        },
+        watch: {
+            "req.href": simplize.run
         }
     });
 }
@@ -39,6 +44,49 @@ simplize.ready = function(cb){
         cb();
     });
 };
+
+simplize.init = function(){
+    var location = window.location,
+        search = location.search,
+        hash = location.hash,
+        href = location.href,
+        result, query;
+
+    if ( hash && hash != '#' ){
+        result = utils.$rebuildURI(hash.substring(1));
+    }else{
+        result = utils.$rebuildURI('/');
+    }
+
+    if ( search && search != '?' ){
+        search = search.substring(1);
+        search = result.search + '&' + search;
+        search = search.replace(/^\?/, '');
+        result.search = search ? '?' + search : search;
+        query = querystrings.format(search);
+        result.query = query;
+        result.href = result.path + result.search;
+    }
+
+    resource.req = result;
+
+    var _href = location.origin + location.pathname + '#' + result.href;
+    if ( _href != href ){
+        history.replaceState({ url: _href }, document.title, _href);
+    }
+    simplize.hashChange();
+}
+
+simplize.run = function(){
+    console.log(this)
+}
+
+simplize.hashChange = function(){
+    utils.on(window, 'hashchange', function(){
+        var hash = window.location.hash.replace(/^\#/, '');
+        utils.$extend(resource.req, utils.$rebuildURI(hash));
+    });
+}
 
 
 function createRoot(){
@@ -74,13 +122,19 @@ function fixConfigs(options){
             env: {
                 set: function(value){ this[camelizeEnv] = value; },
                 get: function(){ return this[camelizeEnv]; }
+            },
+            $headbar: function(){
+                return this.$refs.headbar;
             }
         }
         utils.$extend(computeds, options[i].computed || {});
         result[name].computed = computeds;
 
+        /**
+         * extend method objects
+         */
         var methods = {
-            webview: webviews.get
+            $webview: webviews.get
         }
         utils.$extend(methods, options[i].methods || {});
         result[name].methods = methods;
