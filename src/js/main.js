@@ -192,9 +192,7 @@ function createRoot(){
 function fixConfigs(options){
     var result = {}, innerHTML = [];
     for ( var i in options ){
-        var name = 'browser-' + i, data = {
-            status: false
-        };
+        var name = 'browser-' + i, data = { status: false };
         innerHTML.push('<' + name + ' v-ref:' + name + ' :' + name + '-req.sync="req" :' + name + '-env.sync="env"></' + name + '>');
 
         (function(distoptions, database){
@@ -203,7 +201,8 @@ function fixConfigs(options){
             toolbar.tbfix(result[name], database);
 
             var webviewWraper = webviews.wrapWebviewHTML(result[name].webviews || {});
-            result[name].template = '<div class="web-browser" v-if="status" transition="fade"><headbar v-ref:headbar></headbar><div class="web-views">' + webviewWraper.html + '</div></div>';
+            var mode = distoptions.keepAlive ? 'v-show="status"' : 'v-if="status"';
+            result[name].template = '<div class="web-browser" ' + mode + ' transition="fade"><headbar v-ref:headbar></headbar><div class="web-views">' + webviewWraper.html + '</div></div>';
             result[name].components = webviewWraper.result;
             result[name].components.headbar = result[name].headbar || headbar.component;
 
