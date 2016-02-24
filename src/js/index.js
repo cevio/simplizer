@@ -1,14 +1,13 @@
 var simplize = require('./main');
 
 simplize.ready(function(){
-    var application = simplize({
+    var app = simplize({
         "index": {
-            name: "首页",
+            title: "首页",
             icon: '<i class="fa fa-home"></i>',
             url: '/',
             webviews: {
                 'a': {
-                    template: "template[name='index']",
                     components: {
                         as: {
                             name: 'as',
@@ -19,24 +18,23 @@ simplize.ready(function(){
             }
         },
         "home": {
-            name: '测试',
+            title: '测试',
             icon: '<i class="fa fa-home"></i>',
             url: '/a',
             webviews: {
-                b: {
-                    template: "template[name='home']"
-                }
+                b: {}
             }
         },
         "list": {
-            name: '李彪爷',
+            title: '李彪爷',
             icon: '<i class="fa fa-home"></i>',
+            url: '/c',
             webviews: {
-                c: {
-                    template: "template[name='list']"
-                }
+                c: {}
             }
         }
     });
-    console.log(application);
+    var indexBrowser = app.browser('index');
+    var aWebview = indexBrowser.webview('a');
+    console.log(indexBrowser, aWebview)
 });

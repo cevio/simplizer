@@ -8,3 +8,8 @@ exports.tbfix = function(result, data){
 exports.fixdata = function(fn){
     this.tbfix = fn;
 }
+
+exports.component = {
+    name: 'toolbar',
+    template: '<div class="web-toolbar">toolbar</div>'
+}
