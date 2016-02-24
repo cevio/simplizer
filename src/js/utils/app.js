@@ -14,3 +14,14 @@ function getTemplate(value){
     }
     return html;
 }
+
+exports.sessionName = 'simplize-history-name';
+exports.sessionValueName = null;
+
+exports.setURI = function(uri, href){
+    var index = uri.indexOf(href);
+    if ( index == -1 ){
+        uri.push(href);
+        window.sessionStorage.setItem(this.sessionValueName, JSON.stringify(uri));
+    }
+}

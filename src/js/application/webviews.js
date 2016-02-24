@@ -3,7 +3,8 @@ exports.wrapWebviewHTML = function(webviews){
     var result = {}, html = [];
     for ( var i in webviews ){
         var pname = 'webview-' + i, data = {
-            status: false
+            status: false,
+            direction: 'slient'
         };
 
         (function(name, options, database){
@@ -12,7 +13,7 @@ exports.wrapWebviewHTML = function(webviews){
             var template = utils.getTemplate(options.template || "template[name='" + i + "']");
             html.push('<' + name + ' v-ref:' + name + ' :' + name + '-req.sync="req" :' + name + '-env.sync="env"></' + name + '>');
             result[name].name = 'webview';
-            result[name].template = '<div class="web-view" v-show="status">' + template + '</div>';
+            result[name].template = '<div class="web-view" v-show="status" transition="move" :class="direction">' + template + '</div>';
             result[name].props = [name + '-req', name + '-env'];
             var camelizeReq = utils.camelize(name + '-req');
             var camelizeEnv = utils.camelize(name + '-env');
@@ -28,6 +29,18 @@ exports.wrapWebviewHTML = function(webviews){
             }
             utils.$extend(computeds, options.computed || {});
             result[name].computed = computeds;
+
+            var watches = {
+                "status": function(value){
+                    var browser = this.$parent;
+                    if ( value ){
+                        browser.$ActiveWebview = this;
+                    }
+                }
+            }
+            utils.$extend(watches, options.watch || {});
+            result[name].watch = watches;
+
             result[name].data = function(){
                 return database;
             }

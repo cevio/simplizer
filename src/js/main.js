@@ -16,7 +16,8 @@ var browser = require('./application/browser');
 var webviews = require('./application/webviews');
 var next = require('./next');
 var layer = require('./application/layer');
-
+var sessions = require('./application/session');
+Vue.debug = true;
 /**
  *  expose proxy.
  */
@@ -83,15 +84,23 @@ simplize.init = function(){
 
     resource.req = result;
 
+    simplize.session();
+    utils.setURI(sessions, result.href);
+
     var _href = location.origin + location.pathname + '#' + result.href;
     if ( _href != href ){
         history.replaceState({ url: _href }, document.title, _href);
     }
+
     simplize.hashChange();
 }
 
-simplize.run = function(){
-    this.$next.run();
+simplize.run = function(newValue, oldValue){
+    var that = this;
+    simplize.history(newValue, oldValue);
+    utils.nextTick(function(){
+        that.$next.run();
+    });
 }
 
 simplize.push = function(method, path, opts, fn){
@@ -116,19 +125,60 @@ simplize.use = function(router, brw){
         brw = router;
         router = '/';
     }
-    simplize.push(
-        'browser',
-        router || '/',
-        utils.$looser,
-        brw.$run
-    );
+    simplize.push('browser', router || '/', utils.$looser, brw.$run);
 }
 
 simplize.hashChange = function(){
     utils.on(window, 'hashchange', function(){
         var hash = window.location.hash.replace(/^\#/, '');
-        utils.$extend(resource.req, utils.$rebuildURI(hash));
+        var result = utils.$rebuildURI(hash);
+        utils.$extend(resource.req, result);
     });
+}
+
+simplize.history = function(newValue, oldValue){
+    if ( newValue ){
+        var i = -1, j = -1, result;
+        i = sessions.indexOf(newValue);
+        if ( oldValue ){
+            j = sessions.indexOf(oldValue);
+        }
+        if ( i == -1 ){
+            result = 'left';
+        }else{
+            if ( i > j ){
+                result = 'left';
+            }else if ( i < j ){
+                result = 'right';
+            }else{
+                result = 'slient';
+            }
+        }
+        simplize.app.$history = result;
+    }else{
+        simplize.app.$history = 'slient';
+    }
+}
+
+simplize.session = function(){
+    var name = window.sessionStorage.getItem(utils.sessionName);
+    if ( !name ){
+        name =  'simplize-history-' + new Date().getTime();
+        window.sessionStorage.setItem(utils.sessionName, name);
+    }
+    utils.sessionValueName = name;
+    var locals = window.sessionStorage.getItem(name);
+    if ( locals ){
+        try{
+            locals = JSON.parse(locals);
+        }catch(e){
+            locals = [];
+        }
+    }else{
+        locals = [];
+    }
+
+    sessions = locals;
 }
 
 
@@ -153,7 +203,7 @@ function fixConfigs(options){
             toolbar.tbfix(result[name], database);
 
             var webviewWraper = webviews.wrapWebviewHTML(result[name].webviews || {});
-            result[name].template = '<div class="web-browser" v-if="status"><headbar v-ref:headbar></headbar><div class="web-views">' + webviewWraper.html + '</div></div>';
+            result[name].template = '<div class="web-browser" v-if="status" transition="fade"><headbar v-ref:headbar></headbar><div class="web-views">' + webviewWraper.html + '</div></div>';
             result[name].components = webviewWraper.result;
             result[name].components.headbar = result[name].headbar || headbar.component;
 
@@ -187,7 +237,8 @@ function fixConfigs(options){
                 $run: browser.run,
                 $use: browser.use,
                 $active: browser.active,
-                $render: browser.render
+                $render: browser.render,
+                $route: browser.route
             }
             utils.$extend(methods, distoptions.methods || {});
             result[name].methods = methods;
@@ -202,6 +253,25 @@ function fixConfigs(options){
             }
             utils.$extend(events, distoptions.events || {});
             result[name].events = events;
+
+            /**
+             * extend watch objects
+             */
+            var watches = {
+                "status": function(value){
+                    var app = this.$parent;
+                    if ( value ){
+                        app.$ActiveBrowser = this;
+                    }else{
+                        var webview = this.$ActiveWebview;
+                        if ( webview ){
+                            webview.status = false;
+                        }
+                    }
+                }
+            }
+            utils.$extend(watches, distoptions.watch || {});
+            result[name].watch = watches;
 
             utils.$extend(database, distoptions.data || {});
             result[name].data = function(){ return database; }
