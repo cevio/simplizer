@@ -2,30 +2,36 @@ var utils = require('../utils');
 exports.wrapWebviewHTML = function(webviews){
     var result = {}, html = [];
     for ( var i in webviews ){
-        var pname = 'webview-' + i, data = webviews[i].data || {};
-        result[pname] = webviews[i];
-        var template = utils.getTemplate(webviews[i].template || "template[name='" + i + "']");
-        html.push('<' + pname + ' v-ref:' + pname + ' :' + pname + '-req.sync="req" :' + pname + '-env.sync="env"></' + pname + '>');
-        result[pname].name = 'webview';
-        result[pname].template = '<div class="web-view">' + template + '</div>';
-        result[pname].props = [pname + '-req', pname + '-env'];
-        var camelizeReq = utils.camelize(pname + '-req');
-        var camelizeEnv = utils.camelize(pname + '-env');
-        var computeds = {
-            req: {
-                set: function(value){ this[camelizeReq] = value; },
-                get: function(){ return this[camelizeReq]; }
-            },
-            env: {
-                set: function(value){ this[camelizeEnv] = value; },
-                get: function(){ return this[camelizeEnv]; }
+        var pname = 'webview-' + i, data = {
+            status: false
+        };
+
+        (function(name, options, database){
+            utils.extend(database, options.data || {});
+            result[name] = options;
+            var template = utils.getTemplate(options.template || "template[name='" + i + "']");
+            html.push('<' + name + ' v-ref:' + name + ' :' + name + '-req.sync="req" :' + name + '-env.sync="env"></' + name + '>');
+            result[name].name = 'webview';
+            result[name].template = '<div class="web-view" v-show="status">' + template + '</div>';
+            result[name].props = [name + '-req', name + '-env'];
+            var camelizeReq = utils.camelize(name + '-req');
+            var camelizeEnv = utils.camelize(name + '-env');
+            var computeds = {
+                req: {
+                    set: function(value){ this[camelizeReq] = value; },
+                    get: function(){ return this[camelizeReq]; }
+                },
+                env: {
+                    set: function(value){ this[camelizeEnv] = value; },
+                    get: function(){ return this[camelizeEnv]; }
+                }
             }
-        }
-        utils.$extend(computeds, webviews[i].computed || {});
-        result[pname].computed = computeds;
-        result[pname].data = function(){
-            return data;
-        }
+            utils.$extend(computeds, options.computed || {});
+            result[name].computed = computeds;
+            result[name].data = function(){
+                return database;
+            }
+        }).call(this, pname, webviews[i], data);
     }
     return {
         result: result,

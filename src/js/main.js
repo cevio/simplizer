@@ -14,22 +14,35 @@ var toolbar = require('./components/toolbar');
 var headbar = require('./components/headbar');
 var browser = require('./application/browser');
 var webviews = require('./application/webviews');
+var next = require('./next');
+var layer = require('./application/layer');
 
 /**
  *  expose proxy.
  */
 module.exports = simplize;
 
+Vue.component('middle', require('./components/middle'));
+Vue.mixin({
+    created: function(){
+        this.$next = new next(function(){
+            this.$emit('end');
+        }, this);
+    }
+});
+
 function simplize(options){
     simplize.init();
     var components = fixConfigs(options);
     components.toolbar = toolbar.component;
-    return new Vue({
+    return simplize.app = new Vue({
         el: simplize.$root,
         data: resource,
         components: components,
         methods: {
-            $browser: browser.get
+            $browser: browser.get,
+            $use: simplize.use,
+            $run: simplize.run
         },
         watch: {
             "req.href": simplize.run
@@ -78,7 +91,37 @@ simplize.init = function(){
 }
 
 simplize.run = function(){
-    console.log(this)
+    this.$next.run();
+}
+
+simplize.push = function(method, path, opts, fn){
+    var Layer = new layer(method, path, opts, fn);
+    var that = this;
+    simplize.app.$next.use(function(next){
+        if ( Layer.match(this.req.path) ){
+            var distURL = this.req.path.replace(Layer.path, '') || '/';
+            if ( !/^\//.test(distURL) ) distURL = '/' + distURL;
+            this.req.params = Layer.params || {};
+            return Layer.handle.call(this, distURL, next);
+        }
+        next();
+    });
+}
+
+simplize.use = function(router, brw){
+    if ( utils.$type(brw, 'string') ){
+        brw = simplize.app.$browser(brw);
+    }
+    if ( !brw ){
+        brw = router;
+        router = '/';
+    }
+    simplize.push(
+        'browser',
+        router || '/',
+        utils.$looser,
+        brw.$run
+    );
 }
 
 simplize.hashChange = function(){
@@ -99,50 +142,72 @@ function createRoot(){
 function fixConfigs(options){
     var result = {}, innerHTML = [];
     for ( var i in options ){
-        var name = 'browser-' + i, data = {};
+        var name = 'browser-' + i, data = {
+            status: false
+        };
         innerHTML.push('<' + name + ' v-ref:' + name + ' :' + name + '-req.sync="req" :' + name + '-env.sync="env"></' + name + '>');
-        result[name] = options[i];
-        toolbar.tbfix(result[name], data, webviews.wrapHTML);
-        var webviewWraper = webviews.wrapWebviewHTML(result[name].webviews || {});
-        result[name].template = '<div class="web-browser"><headbar v-ref:headbar></headbar><div class="web-views">' + webviewWraper.html + '</div></div>';
-        result[name].components = webviewWraper.result;
-        result[name].components.headbar = result[name].headbar || headbar.component;
 
-        /**
-         * extend props objects
-         */
-        result[name].props = [name + '-req', name + '-env'];
-        var camelizeReq = utils.camelize(name + '-req');
-        var camelizeEnv = utils.camelize(name + '-env');
-        var computeds = {
-            req: {
-                set: function(value){ this[camelizeReq] = value; },
-                get: function(){ return this[camelizeReq]; }
-            },
-            env: {
-                set: function(value){ this[camelizeEnv] = value; },
-                get: function(){ return this[camelizeEnv]; }
-            },
-            $headbar: function(){
-                return this.$refs.headbar;
+        (function(distoptions, database){
+
+            result[name] = distoptions;
+            toolbar.tbfix(result[name], database);
+
+            var webviewWraper = webviews.wrapWebviewHTML(result[name].webviews || {});
+            result[name].template = '<div class="web-browser" v-if="status"><headbar v-ref:headbar></headbar><div class="web-views">' + webviewWraper.html + '</div></div>';
+            result[name].components = webviewWraper.result;
+            result[name].components.headbar = result[name].headbar || headbar.component;
+
+            /**
+             * extend props objects
+             */
+            result[name].props = [name + '-req', name + '-env'];
+            var camelizeReq = utils.camelize(name + '-req');
+            var camelizeEnv = utils.camelize(name + '-env');
+            var computeds = {
+                req: {
+                    set: function(value){ this[camelizeReq] = value; },
+                    get: function(){ return this[camelizeReq]; }
+                },
+                env: {
+                    set: function(value){ this[camelizeEnv] = value; },
+                    get: function(){ return this[camelizeEnv]; }
+                },
+                $headbar: function(){
+                    return this.$refs.headbar;
+                }
             }
-        }
-        utils.$extend(computeds, options[i].computed || {});
-        result[name].computed = computeds;
+            utils.$extend(computeds, distoptions.computed || {});
+            result[name].computed = computeds;
 
-        /**
-         * extend method objects
-         */
-        var methods = {
-            $webview: webviews.get
-        }
-        utils.$extend(methods, options[i].methods || {});
-        result[name].methods = methods;
+            /**
+             * extend method objects
+             */
+            var methods = {
+                $webview: webviews.get,
+                $run: browser.run,
+                $use: browser.use,
+                $active: browser.active,
+                $render: browser.render
+            }
+            utils.$extend(methods, distoptions.methods || {});
+            result[name].methods = methods;
 
-        utils.$extend(data, options[i].data || {});
-        result[name].data = function(){
-            return data;
-        }
+            /**
+             * extend event objects
+             */
+            var events = {
+                end: function(){
+                    this.$nextcb && this.$nextcb();
+                }
+            }
+            utils.$extend(events, distoptions.events || {});
+            result[name].events = events;
+
+            utils.$extend(database, distoptions.data || {});
+            result[name].data = function(){ return database; }
+
+
+        }).call(this, options[i], data);
     }
     simplize.$root.innerHTML = '<div class="web-browsers">' + innerHTML.join('') + '</div><toolbar v-ref:toolbar></toolbar>';
     return result;

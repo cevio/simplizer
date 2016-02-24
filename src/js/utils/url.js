@@ -22,6 +22,7 @@ exports.$rebuildURI = function(url){
         path: path,
         search: search,
         query: query,
-        href: url
+        href: url,
+        params: {}
     }
 }
