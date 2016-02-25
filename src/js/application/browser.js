@@ -1,5 +1,6 @@
 var utils = require('../utils');
 var layer = require('./layer');
+var animate = require('./animate');
 
 exports.get = function(name){
     return this.$refs[utils.camelize('browser-' + name)];
@@ -32,11 +33,38 @@ exports.active = function(){
     }
 }
 
-exports.render = function(name){
-    var that = this;
+exports.render = function(name, direction, foo){
+    if ( !foo ){
+        if ( typeof direction === 'function' ){
+            foo = direction;
+            direction = 'history';
+        }
+    }
+    var app = this.$parent;
+    var oldbrowser = app.$ActiveBrowser;
+    var newBrowser = this;
+    var oldwebview;
+    if ( oldbrowser ){
+        if ( oldbrowser == newBrowser ){
+            oldwebview = oldbrowser.$ActiveWebview;
+        }
+        oldbrowser.status = false;
+    }
+    newBrowser.status = true;
+
     utils.nextTick(function(){
-        var webview = that.$webview(name);
-        webview.status = true;
+        var webview = newBrowser.$webview(name);
+        animate(oldbrowser, newBrowser, oldwebview, webview, direction);
+    });
+}
+
+exports.route = function(router, name){
+    if ( !name ){
+        name = router;
+        router = '/';
+    }
+    this.$active(router, function(){
+        this.$render(name);
     });
 }
 
@@ -47,7 +75,6 @@ function pushWare(that, method, path, opts, fn){
             var done = next;
             if ( Layer.method === 'active' ) {
                 done = null;
-                this.status = true;
             }
             Layer.params = Layer.params || {};
             for ( var i in Layer.params ){

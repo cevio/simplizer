@@ -1,1 +1,80 @@
 /* your code here */
+*{ box-sizing: border-box; }
+html,body,.web-app,.web-browsers,.web-browser,.web-views,.web-view{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+
+}
+.web-app,.web-browsers,.web-browser,.web-views,.web-view{
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+}
+
+.move-enter.fade{
+    animation: fadeIn 350ms forwards;
+}
+.move-leave.fade{
+    animation: fadeOut 350ms forwards;
+}
+.move-enter.left{
+    z-index: 2;
+    animation: leftIn 350ms forwards;
+}
+.move-leave.left{
+    z-index: 1;
+    animation: leftOut 350ms forwards;
+}
+.move-enter.right{
+    z-index: 1;
+    animation: rightIn 350ms forwards;
+}
+.move-leave.right{
+    z-index: 2;
+    animation: rightOut 350ms forwards;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+@keyframes leftIn{
+    from {
+        transform: translate3d(100%, 0, 0);
+    }
+    to{
+        transform: translate3d(0,0,0);
+    }
+}
+@keyframes leftOut{
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+    to{
+        transform: translate3d(-20%,0,0);
+    }
+}
+
+@keyframes rightIn{
+    from {
+        transform: translate3d(-20%, 0, 0);
+    }
+    to{
+        transform: translate3d(0,0,0);
+    }
+}
+@keyframes rightOut{
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+    to{
+        transform: translate3d(100%,0,0);
+    }
+}

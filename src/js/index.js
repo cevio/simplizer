@@ -7,22 +7,37 @@ simplize.ready(function(){
             icon: '<i class="fa fa-home"></i>',
             url: '/',
             webviews: {
-                'a': {
+                a: {
+                    methods: {
+                        click: function(){
+                            window.location.href="#/a/b/c/d";
+                        }
+                    },
                     components: {
                         as: {
                             name: 'as',
                             template: '<p>as component</p>'
                         }
+                    },
+                    events: {
+                        load: function(){
+                            console.log('a is loaded')
+                        },
+                        unload: function(){
+                            console.log('a is unloaded')
+                        }
+                    }
+                },
+                b:{
+                    events: {
+                        load: function(){
+                            console.log('b is loaded')
+                        },
+                        unload: function(){
+                            console.log('b is unloaded')
+                        }
                     }
                 }
-            }
-        },
-        "home": {
-            title: '测试',
-            icon: '<i class="fa fa-home"></i>',
-            url: '/a',
-            webviews: {
-                b: {}
             }
         },
         "list": {
@@ -43,15 +58,20 @@ simplize.ready(function(){
     var aWebview = indexBrowser.$webview('a');
     var headbar = indexBrowser.$headbar;
     // /a/b/c/d
-    app.$use('/a/:d', indexBrowser);
-    indexBrowser.$use(function(next){
-        console.log('in', this);
-        next();
-    });
-    indexBrowser.$active('/c/:path', function(){
-        console.log('this')
-        this.$render('a');
+    app.$use(indexBrowser);
+
+    indexBrowser.$route('a');
+    // indexBrowser.$active(function(){
+    //     //console.log('this')
+    //     this.$render('a', function(){
+    //         console.log(this);
+    //     });
+    // });
+    indexBrowser.$active('/a/b/c/d', function(){
+        this.$render('b', function(){
+            console.log(this);
+        })
     })
-    console.log(indexBrowser, aWebview, app, headbar);
+    //console.log(indexBrowser, aWebview, app, headbar);
     app.$run();
 });
