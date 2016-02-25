@@ -97,6 +97,9 @@ simplize.ready(function() {
                     this.$headbar.center.text = 'simplize List Page';
                     this.$headbar.left.icon='<i class="fa fa-arrow-left"></i>';
                     this.$headbar.left.text="返回";
+                    this.$headbar.left.fn=function(){
+                      history.back();
+                    }
                     this.$headbar.center.text = 'Simplizer <br> <i class="fa fa-scribd"></i>';
                     this.$headbar.right.icon='';
                     this.$headbar.right.text='';

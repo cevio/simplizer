@@ -15,25 +15,49 @@ html,body,.web-app,.web-browsers,.web-browser,.web-views,.web-view{
     background-color: #fff;
 }
 
+.web-head{
+  background-color: rgb(31, 166, 233);
+  opacity: 0.8;
+  z-index: 1;
+}
+.web-head-temp{
+  /*background-color: rgb(233, 177, 31);*/
+  z-index: 2;
+  opacity:1;
+}
+.web-head-temp.left{
+  z-index: 2;
+}
+.web-head.left{
+  z-index: 1;
+}
+.web-head-temp.right{
+  z-index: 1;
+}
+.web-head.right{
+  z-index: 2;
+}
+
+
 
 .fade350-enter{
   animation: fadeIn 350ms forwards;
 }
 .fade350-leave{
-  animation: fadeIn 350ms forwards;
+  animation: fadeOut 350ms forwards;
 }
 
 .headAnim-enter.left{
-  animation: slideInRight 350ms forwards;
+  animation: fadeInRight 350ms forwards;
 }
 .headAnim-leave.left{
-  animation: slideOutRight 350ms forwards;
+  animation: fadeOutLeft 350ms forwards;
 }
 .headAnim-enter.right{
-  animation: slideInLeft 350ms forwards;
+  animation: fadeInLeft 350ms forwards;
 }
 .headAnim-leave.right{
-  animation: slideOutLeft 350ms forwards;
+  animation: fadeOutRight 350ms forwards;
 }
 
 
