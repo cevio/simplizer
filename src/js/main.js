@@ -218,7 +218,7 @@ function createRoot(){
 function fixConfigs(options){
     var result = {}, innerHTML = [];
     for ( var i in options ){
-        var name = 'browser-' + i, data = { status: false };
+        var name = 'browser-' + i, data = { status: false, headbarHeight: 0 };
         innerHTML.push('<' + name + ' v-ref:' + name + ' :' + name + '-req.sync="req" :' + name + '-env.sync="env"></' + name + '>');
 
         (function(distoptions, database){

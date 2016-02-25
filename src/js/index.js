@@ -107,6 +107,6 @@ simplize.ready(function() {
                 }
             })
         })
-        //console.log(indexBrowser, aWebview, app, headbar);
+        console.log(app);
     app.$run();
 });

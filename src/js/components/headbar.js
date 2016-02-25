@@ -126,5 +126,13 @@ exports.component = {
     },
     ready: function(){
         this.$parent.$headbar = this;
+        this.$parent.headbarHeight = this.$el.nextSibling.clientHeight;
+    },
+    watch: {
+        "status": function(value){
+            if ( !!value ){
+                this.$parent.headbarHeight = this.$el.nextSibling.clientHeight;
+            }
+        }
     }
 }
