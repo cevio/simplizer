@@ -17,6 +17,11 @@ html,body,.web-app,.web-browsers,.web-browser,.web-views,.web-view{
 
 .web-view{
     overflow: auto;
+    overflow-x: hidden;
+}
+.web-view, pre{
+    word-wrap: break-word;
+    word-break: normal;
 }
 
 .web-head{
