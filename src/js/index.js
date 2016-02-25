@@ -65,10 +65,11 @@ simplize.ready(function() {
 
     // /indexBrowser.$route('a');
     indexBrowser.$active(function() {
-
+        console.log(this.$toolbar)
         this.$render('a', function() {
             //console.log(this)
             console.log(this.$headbar);
+            console.log(this.$toolbar)
         });
     });
 

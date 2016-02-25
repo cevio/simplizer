@@ -246,6 +246,9 @@ function fixConfigs(options){
                 env: {
                     set: function(value){ this[camelizeEnv] = value; },
                     get: function(){ return this[camelizeEnv]; }
+                },
+                $toolbar: function(){
+                    return this.$root.$toolbar;
                 }
             }
             utils.$extend(computeds, distoptions.computed || {});

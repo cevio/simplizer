@@ -29,6 +29,9 @@ exports.wrapWebviewHTML = function(webviews){
                 },
                 $headbar: function(){
                     return this.$parent.$headbar;
+                },
+                $toolbar: function(){
+                    return this.$root.$toolbar;
                 }
             }
             utils.$extend(computeds, options.computed || {});
