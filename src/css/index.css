@@ -15,6 +15,28 @@ html,body,.web-app,.web-browsers,.web-browser,.web-views,.web-view{
     background-color: #fff;
 }
 
+
+.fade350-enter{
+  animation: fadeIn 350ms forwards;
+}
+.fade350-leave{
+  animation: fadeIn 350ms forwards;
+}
+
+.headAnim-enter.left{
+  animation: slideInRight 350ms forwards;
+}
+.headAnim-leave.left{
+  animation: slideOutRight 350ms forwards;
+}
+.headAnim-enter.right{
+  animation: slideInLeft 350ms forwards;
+}
+.headAnim-leave.right{
+  animation: slideOutLeft 350ms forwards;
+}
+
+
 .move-enter.fade{
     animation: fadeIn 350ms forwards;
 }
