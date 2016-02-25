@@ -6,24 +6,24 @@ exports.component = {
         '<div class="web-headbar" v-if="status" :transition="statusAnimate">' +
             '<div class="web-head" :class="class" :style="style">' +
                 '<div class="web-headbar-left" @click="left.fn">' +
-                    '<div class="icon-content" v-html="left.icon" v-if="open" transition="fade350"></div>' +
+                    '<div class="icon-content" v-html="left.icon" v-if="open" transition="fade350" :class="direction"></div>' +
                     '<div class="text-content" v-html="left.text" v-if="open" :transition="transition" :class="direction"></div>' +
                 '</div>' +
                 '<div class="web-headbar-center" @click="center.fn" v-html="center.text" v-if="open" :transition="transition" :class="direction"></div>' +
                 '<div class="web-headbar-right" @click="right.fn">' +
                     '<div class="text-content" v-html="right.text" v-if="open" :transition="transition" :class="direction"></div>' +
-                    '<div class="icon-content" v-html="right.icon" v-if="open" transition="fade350"></div>' +
+                    '<div class="icon-content" v-html="right.icon" v-if="open" transition="fade350" :class="direction"></div>' +
                 '</div>' +
             '</div>' +
             '<div class="web-head web-head-temp" :class="temp.class" :style="temp.style" v-if="temp.status">' +
                 '<div class="web-headbar-left">' +
-                    '<div class="icon-content" v-html="temp.left.icon" v-if="temp.open" transition="fade350"></div>' +
+                    '<div class="icon-content" v-html="temp.left.icon" v-if="temp.open" transition="fade350" :class="direction"></div>' +
                     '<div class="text-content" v-html="temp.left.text" v-if="temp.open" :transition="transition" :class="direction">></div>' +
                 '</div>' +
                 '<div class="web-headbar-center" v-html="temp.center.text" v-if="temp.open" :transition="transition" :class="direction">></div>' +
                 '<div class="web-headbar-right">' +
                     '<div class="text-content" v-html="temp.right.text" v-if="temp.open" :transition="transition" :class="direction">></div>' +
-                    '<div class="icon-content" v-html="temp.right.icon" v-if="temp.open" transition="fade350"></div>' +
+                    '<div class="icon-content" v-html="temp.right.icon" v-if="temp.open" transition="fade350" :class="direction"></div>' +
                 '</div>' +
             '</div>' +
         '</div>',
