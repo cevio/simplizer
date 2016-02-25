@@ -26,6 +26,9 @@ exports.wrapWebviewHTML = function(webviews){
                 env: {
                     set: function(value){ this[camelizeEnv] = value; },
                     get: function(){ return this[camelizeEnv]; }
+                },
+                $headbar: function(){
+                    return this.$parent.$headbar;
                 }
             }
             utils.$extend(computeds, options.computed || {});
