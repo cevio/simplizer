@@ -251,6 +251,11 @@ function fixConfigs(options){
                     return this.$root.$toolbar;
                 }
             }
+            if ( distoptions.keepAlive ){
+                computeds.$headbar = function(){
+                    return this.$refs.headbar;
+                }
+            }
             utils.$extend(computeds, distoptions.computed || {});
             result[name].computed = computeds;
 

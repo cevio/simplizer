@@ -6,8 +6,10 @@ simplize.ready(function() {
             title: "首页",
             icon: '<i class="fa fa-home"></i>',
             url: '/',
+            keepAlive: true,
             webviews: {
                 a: {
+
                     data: {
                         test: false
                     },
@@ -65,7 +67,7 @@ simplize.ready(function() {
 
     // /indexBrowser.$route('a');
     indexBrowser.$active(function() {
-        console.log(this.$toolbar)
+        console.log(this.$toolbar, this.$headbar)
         this.$render('a', function() {
             //console.log(this)
             console.log(this.$headbar);
