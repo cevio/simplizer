@@ -11,5 +11,8 @@ exports.fixdata = function(fn){
 
 exports.component = {
     name: 'toolbar',
-    template: '<div class="web-toolbar">toolbar</div>'
+    template: '<div class="web-toolbar">toolbar</div>',
+    ready: function(){
+        this.$parent.$toolbar = this;
+    }
 }

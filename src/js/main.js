@@ -15,6 +15,7 @@ var headbar = require('./components/headbar');
 var browser = require('./application/browser');
 var webviews = require('./application/webviews');
 var redirect = require('./application/redirect');
+var directiveRedirect = require('./directives/redirect');
 var next = require('./next');
 var layer = require('./application/layer');
 var keeper = require('./application/session');
@@ -31,6 +32,9 @@ Vue.mixin({
         this.$next = new next(function(){
             this.$emit('end');
         }, this);
+    },
+    directives: {
+        redirect: directiveRedirect
     }
 });
 
@@ -243,7 +247,12 @@ function fixConfigs(options){
                     set: function(value){ this[camelizeEnv] = value; },
                     get: function(){ return this[camelizeEnv]; }
                 },
-                $headbar: function(){
+                $toolbar: function(){
+                    return this.$root.$toolbar;
+                }
+            }
+            if ( distoptions.keepAlive ){
+                computeds.$headbar = function(){
                     return this.$refs.headbar;
                 }
             }
@@ -297,7 +306,6 @@ function fixConfigs(options){
 
             utils.$extend(database, distoptions.data || {});
             result[name].data = function(){ return database; }
-
 
         }).call(this, options[i], data);
     }

@@ -30,5 +30,8 @@ exports.component = {
                 fn: utils.noop
             }
         }
+    },
+    ready: function(){
+        this.$parent.$headbar = this;
     }
 }

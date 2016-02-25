@@ -6,12 +6,9 @@ simplize.ready(function() {
             title: "首页",
             icon: '<i class="fa fa-home"></i>',
             url: '/',
+            keepAlive: true,
             webviews: {
                 a: {
-                    // left: {
-                    //     icon: '←',
-                    //     text: '左'
-                    // },
                     data: {
                         test: ['aaa','bbb','ccc','ddd','eee','fff'],
                     },
@@ -85,10 +82,14 @@ simplize.ready(function() {
     indexBrowser.$active(function() {
         //console.log('this')
         var that = this;
+        console.log(this.$toolbar, this.$headbar)
         this.$render('a', function() {
-            console.log(this);
+            //console.log(this)
+            console.log(this.$headbar);
+            console.log(this.$toolbar)
         });
     });
+
     indexBrowser.$active('/a/b/c/d', function() {
             this.$render('b', function() {
                 //console.log(this);
