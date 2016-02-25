@@ -65,6 +65,17 @@ exports.component = {
             }
         }
     },
+    events: {
+        left: function(){
+            console.log('animateEnterFromLeftToCenter')
+        },
+        right: function(){
+            console.log('animateEnterFromRightToCenter')
+        },
+        clone: function(){
+            console.log('clone')
+        }
+    },
     ready: function(){
         this.$parent.$headbar = this;
     }

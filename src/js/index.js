@@ -67,17 +67,18 @@ simplize.ready(function() {
 
     // /indexBrowser.$route('a');
     indexBrowser.$active(function() {
-        console.log(this.$toolbar, this.$headbar)
-        this.$render('a', function() {
-            //console.log(this)
-            console.log(this.$headbar);
-            console.log(this.$toolbar)
+        this.$render('a', {
+            before: function(){
+                this.$headbar.center.text = 'simplize Home Page';
+            }
         });
     });
 
     indexBrowser.$active('/a/b/c/d', function() {
-            this.$render('b', function() {
-                //console.log(this);
+            this.$render('b', {
+                before: function(){
+                    this.$headbar.center.text = 'simplize List Page';
+                }
             })
         })
         //console.log(indexBrowser, aWebview, app, headbar);
