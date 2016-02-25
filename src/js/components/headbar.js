@@ -10,8 +10,8 @@ exports.component = {
                 '</div>' +
                 '<div class="web-headbar-center" @click="center.fn" v-html="center.text"></div>' +
                 '<div class="web-headbar-right" @click="right.fn">' +
-                    '<div class="icon-content" v-html="right.icon"></div>' +
                     '<div class="text-content" v-html="right.text"></div>' +
+                    '<div class="icon-content" v-html="right.icon"></div>' +
                 '</div>' +
             '</div>' +
             '<div class="web-head web-head-temp" :class="temp.class" :style="temp.style" v-if="temp.open" :transition="temp.animate">' +
@@ -21,8 +21,8 @@ exports.component = {
                 '</div>' +
                 '<div class="web-headbar-center" v-html="temp.center.text"></div>' +
                 '<div class="web-headbar-right">' +
-                    '<div class="icon-content" v-html="temp.right.icon"></div>' +
                     '<div class="text-content" v-html="temp.right.text"></div>' +
+                    '<div class="icon-content" v-html="temp.right.icon"></div>' +
                 '</div>' +
             '</div>' +
         '</div>',

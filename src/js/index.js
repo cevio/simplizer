@@ -10,7 +10,7 @@ simplize.ready(function() {
             webviews: {
                 a: {
                     data: {
-                        test: ['aaa','bbb','ccc','ddd','eee','fff'],
+                        test: [],
                     },
                     methods: {
                         click: function() {
@@ -65,19 +65,20 @@ simplize.ready(function() {
     app.$use(indexBrowser);
 
     // /indexBrowser.$route('a');
-    indexBrowser.$active(function() {
-        console.log(this);
-        this.$render('a', function() {
-            console.log(this);
-            var that = this;
-            setTimeout(function() {
-                that.test = true;
-            }, 2000);
-            setTimeout(function() {
-                that.test = false;
-            }, 4000)
-        });
-    });
+    // indexBrowser.$active(function() {
+    //     console.log(this);
+    //     this.$render('a', function() {
+    //         console.log(this);
+    //         var that = this;
+    //         setTimeout(function() {
+    //             that.test = ['aaa','bbb','ccc','ddd','eee','fff'];
+    //         }, 2000);
+    //         setTimeout(function() {
+    //             that.test = [];
+    //         }, 4000);
+    //
+    //     });
+    // });
     //indexBrowser.$route('a');
     indexBrowser.$active(function() {
         //console.log('this')
@@ -86,6 +87,12 @@ simplize.ready(function() {
         this.$render('a', function() {
             //console.log(this)
             console.log(this.$headbar);
+            this.$headbar.left.icon='<i class="fa fa-arrow-left"></i>';
+            this.$headbar.left.text="返回";
+            this.$headbar.center.text = 'Simplizer <br> <i class="fa fa-scribd"></i>';
+            this.$headbar.right.icon='<i class="fa fa-css3"></i>';
+            this.$headbar.right.text='MENU';
+
             console.log(this.$toolbar)
         });
     });
