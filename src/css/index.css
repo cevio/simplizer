@@ -17,13 +17,10 @@ html,body,.web-app,.web-browsers,.web-browser,.web-views,.web-view{
 
 .web-head{
   background-color: rgb(31, 166, 233);
-  opacity: 0.8;
   z-index: 1;
 }
 .web-head-temp{
-  /*background-color: rgb(233, 177, 31);*/
   z-index: 2;
-  opacity:1;
 }
 .web-head-temp.left{
   z-index: 2;

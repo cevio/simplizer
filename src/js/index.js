@@ -82,11 +82,11 @@ simplize.ready(function() {
     indexBrowser.$active(function() {
         this.$render('a', {
             before: function(){
-                this.$headbar.left.icon='';
-                this.$headbar.left.text="";
-                this.$headbar.center.text = 'Simplizer <br> <i class="fa fa-scribd"></i>';
-                this.$headbar.right.icon='<i class="fa fa-css3"></i>';
-                this.$headbar.right.text='MENU';
+                this.$headbar.left.icon='1';
+                this.$headbar.left.text="left1";
+                this.$headbar.center.text = 'page1';
+                this.$headbar.right.icon='1';
+                this.$headbar.right.text='right1';
             }
         });
     });
@@ -94,15 +94,14 @@ simplize.ready(function() {
     indexBrowser.$active('/a/b/c/d', function() {
             this.$render('b', {
                 before: function(){
-                    this.$headbar.center.text = 'simplize List Page';
-                    this.$headbar.left.icon='<i class="fa fa-arrow-left"></i>';
-                    this.$headbar.left.text="返回";
+                    this.$headbar.center.text = 'page2';
+                    this.$headbar.left.icon='2';
+                    this.$headbar.left.text="返回2";
                     this.$headbar.left.fn=function(){
                       history.back();
                     }
-                    this.$headbar.center.text = 'Simplizer <br> <i class="fa fa-scribd"></i>';
-                    this.$headbar.right.icon='';
-                    this.$headbar.right.text='';
+                    this.$headbar.right.icon='2';
+                    this.$headbar.right.text='right2';
                 }
             })
         })
