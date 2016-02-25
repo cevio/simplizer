@@ -72,14 +72,14 @@ exports.component = {
                     textStatus: false
                 },
                 class: '',
-                style: '',
+                style: ''
             }
         }
     },
     methods: {
         listen: function(){
             var that = this;
-            animationend(this.$el.nextSibling.querySelector('web-head')).then(function(){
+            animationend(this.$el.nextSibling.querySelector('.web-head .web-headbar-center')).then(function(){
                 this.direction = '';
                 that.temp.status = false;
                 this.left.iconStatus = true;
