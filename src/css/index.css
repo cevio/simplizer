@@ -6,11 +6,9 @@ html,body,.web-app,.web-browsers,.web-browser,.web-views,.web-view{
     overflow: hidden;
     padding: 0;
     margin: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
+
 }
-.web-view{
+.web-app,.web-browsers,.web-browser,.web-views,.web-view{
     position: absolute;
     top: 0;
     left: 0;
