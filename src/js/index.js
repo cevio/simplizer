@@ -8,8 +8,12 @@ simplize.ready(function() {
             url: '/',
             webviews: {
                 a: {
+                    // left: {
+                    //     icon: '←',
+                    //     text: '左'
+                    // },
                     data: {
-                        test: false
+                        test: ['aaa','bbb','ccc','ddd','eee','fff'],
                     },
                     methods: {
                         click: function() {
@@ -67,7 +71,14 @@ simplize.ready(function() {
     indexBrowser.$active(function() {
         console.log(this);
         this.$render('a', function() {
-            console.log(this)
+            console.log(this);
+            var that = this;
+            setTimeout(function() {
+                that.test = true;
+            }, 2000);
+            setTimeout(function() {
+                that.test = false;
+            }, 4000)
         });
     });
     //indexBrowser.$route('a');
