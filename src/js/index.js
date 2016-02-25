@@ -66,15 +66,19 @@ simplize.ready(function(){
     // /indexBrowser.$route('a');
     indexBrowser.$active(function(){
         console.log(this);
-
-
         this.$render('a', function(){
             console.log(this)
+    //indexBrowser.$route('a');
+    indexBrowser.$active(function(){
+        //console.log('this')
+        var that = this;
+        this.$render('a', function(){
+            console.log(this);
         });
     });
     indexBrowser.$active('/a/b/c/d', function(){
         this.$render('b', function(){
-            console.log(this);
+            //console.log(this);
         })
     })
     //console.log(indexBrowser, aWebview, app, headbar);

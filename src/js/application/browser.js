@@ -1,6 +1,9 @@
 var utils = require('../utils');
 var layer = require('./layer');
 var animate = require('./animate');
+var redirect = require('./redirect');
+
+exports.redirect = redirect;
 
 exports.get = function(name){
     return this.$refs[utils.camelize('browser-' + name)];
@@ -54,7 +57,7 @@ exports.render = function(name, direction, foo){
 
     utils.nextTick(function(){
         var webview = newBrowser.$webview(name);
-        animate(oldbrowser, newBrowser, oldwebview, webview, direction);
+        animate(oldbrowser, newBrowser, oldwebview, webview, direction, foo);
     });
 }
 

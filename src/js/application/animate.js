@@ -1,17 +1,19 @@
 var animationend = require('animationend');
 var utils = require('../utils');
+var keep = require('./session');
 
-module.exports = function(oldbrowser, newBrowser, oldwebview, webview, direction){
+module.exports = function(oldbrowser, newBrowser, oldwebview, webview, direction, foo){
     if ( !newBrowser ) return;
     var app = newBrowser.$parent;
     if ( !oldbrowser || oldbrowser != newBrowser ){
         webview.status = true;
         if ( !oldbrowser ){
             webview.$emit('load');
+            typeof foo === 'function' && foo.call(webview);
         }
     }else{
-        
-        load(webview);
+
+        load(webview, foo);
         unload(oldwebview)
         oldwebview.status = false;
         webview.status = true;
@@ -34,9 +36,13 @@ module.exports = function(oldbrowser, newBrowser, oldwebview, webview, direction
     }
 }
 
-function load(webview){
+function load(webview, foo){
     animationend(webview.$el).then(function(){
+        if (typeof keep.temp === 'function'){
+            keep.temp();
+        }
         webview.$emit('load');
+        typeof foo === 'function' && foo.call(webview);
     });
 }
 function unload(webview){
