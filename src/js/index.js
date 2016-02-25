@@ -1,6 +1,6 @@
 var simplize = require('./main');
 
-simplize.ready(function(){
+simplize.ready(function() {
     var app = simplize({
         "index": {
             title: "首页",
@@ -8,12 +8,12 @@ simplize.ready(function(){
             url: '/',
             webviews: {
                 a: {
-                    data:{
-                      test:false
+                    data: {
+                        test: false
                     },
                     methods: {
-                        click: function(){
-                            window.location.href="#/a/b/c/d";
+                        click: function() {
+                            window.location.href = "#/a/b/c/d";
                         }
                     },
                     components: {
@@ -31,12 +31,12 @@ simplize.ready(function(){
                         // }
                     }
                 },
-                b:{
+                b: {
                     events: {
-                        load: function(){
+                        load: function() {
                             console.log('b is loaded')
                         },
-                        unload: function(){
+                        unload: function() {
                             console.log('b is unloaded')
                         }
                     }
@@ -53,7 +53,7 @@ simplize.ready(function(){
         }
     });
 
-    app.$on('end', function(){
+    app.$on('end', function() {
         console.log('pass');
     })
 
@@ -64,23 +64,25 @@ simplize.ready(function(){
     app.$use(indexBrowser);
 
     // /indexBrowser.$route('a');
-    indexBrowser.$active(function(){
+    indexBrowser.$active(function() {
         console.log(this);
-        this.$render('a', function(){
+        this.$render('a', function() {
             console.log(this)
+        });
+    });
     //indexBrowser.$route('a');
-    indexBrowser.$active(function(){
+    indexBrowser.$active(function() {
         //console.log('this')
         var that = this;
-        this.$render('a', function(){
+        this.$render('a', function() {
             console.log(this);
         });
     });
-    indexBrowser.$active('/a/b/c/d', function(){
-        this.$render('b', function(){
-            //console.log(this);
+    indexBrowser.$active('/a/b/c/d', function() {
+            this.$render('b', function() {
+                //console.log(this);
+            })
         })
-    })
-    //console.log(indexBrowser, aWebview, app, headbar);
+        //console.log(indexBrowser, aWebview, app, headbar);
     app.$run();
 });
