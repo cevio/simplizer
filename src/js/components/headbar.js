@@ -7,22 +7,22 @@ exports.component = {
             '<div class="web-head" :class="class" :style="style">' +
                 '<div class="web-headbar-left" @click="left.fn">' +
                     '<div class="icon-content" v-html="left.icon" v-if="left.iconStatus" transition="fade350"></div>' +
-                    '<div class="text-content" v-html="left.text" v-if="left.textStatus" transition="headAnim" :class="direction"></div>' +
+                    '<div class="text-content" v-html="left.text" v-if="left.textStatus" :transition="transition" :class="direction"></div>' +
                 '</div>' +
-                '<div class="web-headbar-center" @click="center.fn" v-html="center.text" v-if="center.textStatus" transition="headAnim" :class="direction"></div>' +
+                '<div class="web-headbar-center" @click="center.fn" v-html="center.text" v-if="center.textStatus" :transition="transition" :class="direction"></div>' +
                 '<div class="web-headbar-right" @click="right.fn">' +
-                    '<div class="text-content" v-html="right.text" v-if="right.textStatus" transition="headAnim" :class="direction"></div>' +
+                    '<div class="text-content" v-html="right.text" v-if="right.textStatus" :transition="transition" :class="direction"></div>' +
                     '<div class="icon-content" v-html="right.icon" v-if="right.iconStatus" transition="fade350"></div>' +
                 '</div>' +
             '</div>' +
             '<div class="web-head web-head-temp" :class="temp.class" :style="temp.style" v-if="temp.status">' +
                 '<div class="web-headbar-left">' +
                     '<div class="icon-content" v-html="temp.left.icon" v-if="temp.left.iconStatus" transition="fade350"></div>' +
-                    '<div class="text-content" v-html="temp.left.text" v-if="temp.left.textStatus" transition="headAnim" :class="direction">></div>' +
+                    '<div class="text-content" v-html="temp.left.text" v-if="temp.left.textStatus" :transition="transition" :class="direction">></div>' +
                 '</div>' +
-                '<div class="web-headbar-center" v-html="temp.center.text" v-if="temp.center.textStatus" transition="headAnim" :class="direction">></div>' +
+                '<div class="web-headbar-center" v-html="temp.center.text" v-if="temp.center.textStatus" :transition="transition" :class="direction">></div>' +
                 '<div class="web-headbar-right">' +
-                    '<div class="text-content" v-html="temp.right.text" v-if="temp.right.textStatus" transition="headAnim" :class="direction">></div>' +
+                    '<div class="text-content" v-html="temp.right.text" v-if="temp.right.textStatus" :transition="transition" :class="direction">></div>' +
                     '<div class="icon-content" v-html="temp.right.icon" v-if="temp.right.iconStatus" transition="fade350"></div>' +
                 '</div>' +
             '</div>' +
@@ -52,6 +52,7 @@ exports.component = {
             style: '',
             direction: '',
             status: true,
+            transition: 'headAnim',
             statusAnimate: 'fade350',
             temp: {
                 status: false,
@@ -80,26 +81,29 @@ exports.component = {
         listen: function(){
             var that = this;
             animationend(this.$el.nextSibling.querySelector('.web-head .web-headbar-center')).then(function(){
-
-              console.log('end')
-                this.direction = '';
+                that.direction = '';
+                that.transition = '';
                 that.temp.status = false;
-                this.left.iconStatus = true;
-                this.left.textStatus = true;
-                this.right.iconStatus = true;
-                this.right.textStatus = true;
-                this.center.textStatus = true;
-                this.temp.left.iconStatus = false;
-                this.temp.left.textStatus = false;
-                this.temp.right.iconStatus = false;
-                this.temp.right.textStatus = false;
-                this.temp.center.textStatus = false;
+
+                that.left.iconStatus = true;
+                that.left.textStatus = true;
+                that.right.iconStatus = true;
+                that.right.textStatus = true;
+                that.center.textStatus = true;
+
+                that.temp.left.iconStatus = false;
+                that.temp.left.textStatus = false;
+                that.temp.right.iconStatus = false;
+                that.temp.right.textStatus = false;
+                that.temp.center.textStatus = false;
             });
         }
     },
     events: {
         left: function(){
             this.direction = 'left';
+            this.transition = 'headAnim';
+
             this.left.iconStatus = false;
             this.left.textStatus = false;
             this.right.iconStatus = false;
@@ -115,6 +119,8 @@ exports.component = {
         },
         right: function(){
             this.direction = 'right';
+            this.transition = 'headAnim';
+
             this.left.iconStatus = false;
             this.left.textStatus = false;
             this.right.iconStatus = false;
