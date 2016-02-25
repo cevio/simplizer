@@ -8,6 +8,9 @@ simplize.ready(function(){
             url: '/',
             webviews: {
                 a: {
+                    data:{
+                      test:false
+                    },
                     methods: {
                         click: function(){
                             window.location.href="#/a/b/c/d";
@@ -20,12 +23,12 @@ simplize.ready(function(){
                         }
                     },
                     events: {
-                        load: function(){
-                            console.log('a is loaded')
-                        },
-                        unload: function(){
-                            console.log('a is unloaded')
-                        }
+                        // load: function(){
+                        //     console.log('a is loaded')
+                        // },
+                        // unload: function(){
+                        //     console.log('a is unloaded')
+                        // }
                     }
                 },
                 b:{
@@ -60,13 +63,15 @@ simplize.ready(function(){
     // /a/b/c/d
     app.$use(indexBrowser);
 
-    indexBrowser.$route('a');
-    // indexBrowser.$active(function(){
-    //     //console.log('this')
-    //     this.$render('a', function(){
-    //         console.log(this);
-    //     });
-    // });
+    // /indexBrowser.$route('a');
+    indexBrowser.$active(function(){
+        console.log(this);
+
+
+        this.$render('a', function(){
+            console.log(this)
+        });
+    });
     indexBrowser.$active('/a/b/c/d', function(){
         this.$render('b', function(){
             console.log(this);
