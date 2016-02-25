@@ -11,21 +11,21 @@
   <meta name="format-detection" content="telephone=no" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
   <title>App name</title>
+  <link href="http://cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.css" rel="stylesheet">
 </head>
 
 <body>
 
-
   <template name="a">
 
 
-        <div style="height:300px; width:100%;" v-redirect="'/a/b/c/d'"><middle style="text-align:center">test</middle></div>
+        <div style="height:300px; width:100%;" v-on:click="click"><middle style="text-align:center">test</middle></div>
 
-        <div v-if="test">
-          avbadbba
+        <div v-for="item in test" transition="bounceUp" stagger='100'>
+            <div>{{item}}</div>
         </div>
-    1
-    <as></as>
+
+    <!-- <as>wwww</as> -->
   </template>
   <template name="b">
     2
