@@ -1,0 +1,155 @@
+/*
+Based On Animate.css | MIT License | github.com/daneden/animate.css
+*/
+
+/*
+  fade animation   (fade  fadeLeft fadeRight fadeUp fadeDown)
+*/
+.fade-enter {
+  animation: fadeIn 1s both;
+}
+.fade-leave {
+  animation: fadeOut 1s both;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.fadeLeft-leave {
+  animation: fadeInLeft 1s both;
+}
+.fadeLeft-enter {
+  animation: fadeOutLeft 1s both;
+}
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+@keyframes fadeOutLeft {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+.fadeRight-enter {}
+.fadeRight-leave {}
+.fadeUp-enter {}
+.fadeUp-leave {}
+.fadeDown-enter {}
+.fadeDown-leave {}
+/*
+  bonuce animation   (bounce  bounceLeft bounceRight bounceUp bounceDown)
+*/
+.bonuce-enter {
+  animation: bounceIn 1s ease;
+}
+.bonuce-leave {
+  animation: bounceOut 1s ease;
+}
+@keyframes bounceIn {
+  from,
+  20%,
+  40%,
+  60%,
+  80%,
+  to {
+    -webkit-animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+  }
+  0% {
+    opacity: 0;
+    -webkit-transform: scale3d(.3, .3, .3);
+    transform: scale3d(.3, .3, .3);
+  }
+  20% {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1);
+    transform: scale3d(1.1, 1.1, 1.1);
+  }
+  40% {
+    -webkit-transform: scale3d(.9, .9, .9);
+    transform: scale3d(.9, .9, .9);
+  }
+  60% {
+    opacity: 1;
+    -webkit-transform: scale3d(1.03, 1.03, 1.03);
+    transform: scale3d(1.03, 1.03, 1.03);
+  }
+  80% {
+    -webkit-transform: scale3d(.97, .97, .97);
+    transform: scale3d(.97, .97, .97);
+  }
+  to {
+    opacity: 1;
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
+@keyframes bounceOut {
+  20% {
+    -webkit-transform: scale3d(.9, .9, .9);
+    transform: scale3d(.9, .9, .9);
+  }
+  50%,
+  55% {
+    opacity: 1;
+    -webkit-transform: scale3d(1.1, 1.1, 1.1);
+    transform: scale3d(1.1, 1.1, 1.1);
+  }
+  to {
+    opacity: 0;
+    -webkit-transform: scale3d(.3, .3, .3);
+    transform: scale3d(.3, .3, .3);
+  }
+}
+/*
+  slide animation   (slideLeft slideRight slideUp slideDown)
+*/
+.slideLeft-enter {}
+.slideLeft-leave {}
+.slideRight-enter {}
+.slideRight-leave {}
+.slideUp-enter {}
+.slideUp-leave {}
+.slideDown-enter {}
+.slideDown-leave {}
+/*
+  zoom animation   (zoom zoomLeft zoomRight zoomUp zoomDown)
+*/
+.zoom-enter {}
+.zoom-leave {}
+.zoomLeft-leave {}
+.zoomLeft-enter {}
+.zoomRight-enter {}
+.zoomRight-leave {}
+.zoomUp-enter {}
+.zoomUp-leave {}
+.zoomDown-enter {}
+.zoomDown-leave {}

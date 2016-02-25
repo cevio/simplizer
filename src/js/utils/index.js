@@ -14,3 +14,6 @@ function extend(source, target){
         source[i] = target[i];
     }
 }
+
+exports.$looser = { sensitive: false, strict: false, end: false };
+exports.$strict = { sensitive: false, strict: true, end: true };
