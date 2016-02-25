@@ -38,7 +38,7 @@ exports.active = function(){
 
 exports.render = function(name, direction, foo){
     if ( !foo ){
-        if ( typeof direction === 'function' ){
+        if ( typeof direction !== 'string' ){
             foo = direction;
             direction = 'history';
         }

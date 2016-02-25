@@ -6,7 +6,6 @@ simplize.ready(function() {
             title: "首页",
             icon: '<i class="fa fa-home"></i>',
             url: '/',
-            keepAlive: true,
             webviews: {
                 a: {
                     data: {
@@ -96,6 +95,11 @@ simplize.ready(function() {
             this.$render('b', {
                 before: function(){
                     this.$headbar.center.text = 'simplize List Page';
+                    this.$headbar.left.icon='<i class="fa fa-arrow-left"></i>';
+                    this.$headbar.left.text="返回";
+                    this.$headbar.center.text = 'Simplizer <br> <i class="fa fa-scribd"></i>';
+                    this.$headbar.right.icon='';
+                    this.$headbar.right.text='';
                 }
             })
         })

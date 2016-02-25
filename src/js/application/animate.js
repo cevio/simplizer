@@ -15,7 +15,7 @@ module.exports = function(oldbrowser, newBrowser, oldwebview, webview, direction
     var app = newBrowser.$parent;
     var $headbar = newBrowser.$headbar;
     if ( oldbrowser && oldbrowser == newBrowser ){
-        $headbar.$emit('clone');
+        $headbar.$emit('before');
     }
 
     if ( typeof before === 'function' ){
@@ -36,6 +36,7 @@ module.exports = function(oldbrowser, newBrowser, oldwebview, webview, direction
     }else{
         if ( canin ){
             var $direction = app.$history;
+            $headbar && $headbar.listen();
             load($headbar, webview, after);
             unload(oldwebview)
             oldwebview.status = false;
