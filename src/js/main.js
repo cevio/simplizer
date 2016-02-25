@@ -14,9 +14,11 @@ var toolbar = require('./components/toolbar');
 var headbar = require('./components/headbar');
 var browser = require('./application/browser');
 var webviews = require('./application/webviews');
+var redirect = require('./application/redirect');
 var next = require('./next');
 var layer = require('./application/layer');
-var sessions = require('./application/session');
+var keeper = require('./application/session');
+var sessions = keeper.pool;
 Vue.debug = true;
 /**
  *  expose proxy.
@@ -43,10 +45,16 @@ function simplize(options){
         methods: {
             $browser: browser.get,
             $use: simplize.use,
-            $run: simplize.run
+            $run: simplize.run,
+            $redirect: redirect
         },
         watch: {
             "req.href": simplize.run
+        },
+        events: {
+            end: function(){
+                if ( keeper.temp ) keeper.temp = null;
+            }
         }
     });
 }
@@ -129,7 +137,8 @@ simplize.use = function(router, brw){
 }
 
 simplize.hashChange = function(){
-    utils.on(window, 'hashchange', function(){
+    utils.on(window, 'hashchange', function(e){
+        e.preventDefault();
         var hash = window.location.hash.replace(/^\#/, '');
         var result = utils.$rebuildURI(hash);
         utils.$extend(resource.req, result);
@@ -138,13 +147,26 @@ simplize.hashChange = function(){
 
 simplize.history = function(newValue, oldValue){
     if ( newValue ){
-        var i = -1, j = -1, result;
+        var o = sessions.length,
+            i = -1,
+            j = -1,
+            result;
+
         i = sessions.indexOf(newValue);
         if ( oldValue ){
             j = sessions.indexOf(oldValue);
         }
+
         if ( i == -1 ){
             result = 'left';
+            if ( j + 1 < o ){
+                sessions = sessions.slice(0, j + 1);
+            }
+            sessions.push(newValue);
+            keeper.temp = function(){
+                window.sessionStorage.setItem(utils.sessionValueName, JSON.stringify(sessions));
+                keeper.temp = null;
+            }
         }else{
             if ( i > j ){
                 result = 'left';
@@ -237,7 +259,8 @@ function fixConfigs(options){
                 $use: browser.use,
                 $active: browser.active,
                 $render: browser.render,
-                $route: browser.route
+                $route: browser.route,
+                $redirect: browser.redirect
             }
             utils.$extend(methods, distoptions.methods || {});
             result[name].methods = methods;

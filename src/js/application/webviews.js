@@ -1,4 +1,5 @@
 var utils = require('../utils');
+var redirect = require('./redirect');
 exports.wrapWebviewHTML = function(webviews){
     var result = {}, html = [];
     for ( var i in webviews ){
@@ -40,6 +41,12 @@ exports.wrapWebviewHTML = function(webviews){
             }
             utils.$extend(watches, options.watch || {});
             result[name].watch = watches;
+
+            var methods = {
+                $redirect: redirect
+            }
+            utils.$extend(methods, options.methods || {});
+            result[name].methods = methods;
 
             result[name].data = function(){
                 return database;
