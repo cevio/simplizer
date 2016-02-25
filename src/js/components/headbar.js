@@ -80,8 +80,18 @@ exports.component = {
         listen: function(){
             var that = this;
             animationend(this.$el.nextSibling.querySelector('web-head')).then(function(){
-                that.open = true;
-                that.temp.open = false;
+                this.direction = '';
+                that.temp.status = false;
+                this.left.iconStatus = true;
+                this.left.textStatus = true;
+                this.right.iconStatus = true;
+                this.right.textStatus = true;
+                this.center.textStatus = true;
+                this.temp.left.iconStatus = false;
+                this.temp.left.textStatus = false;
+                this.temp.right.iconStatus = false;
+                this.temp.right.textStatus = false;
+                this.temp.center.textStatus = false;
             });
         }
     },
