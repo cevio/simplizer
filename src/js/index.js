@@ -82,8 +82,8 @@ simplize.ready(function() {
     indexBrowser.$active(function() {
         this.$render('a', {
             before: function(){
-                this.$headbar.left.icon='<i class="fa fa-arrow-left"></i>';
-                this.$headbar.left.text="返回";
+                this.$headbar.left.icon='';
+                this.$headbar.left.text="";
                 this.$headbar.center.text = 'Simplizer <br> <i class="fa fa-scribd"></i>';
                 this.$headbar.right.icon='<i class="fa fa-css3"></i>';
                 this.$headbar.right.text='MENU';
