@@ -15,47 +15,107 @@ html,body,.web-app,.web-browsers,.web-browser,.web-views,.web-view{
     background-color: #fff;
 }
 
+.web-view{
+    overflow: auto;
+}
+
 .web-head{
-  background-color: rgb(31, 166, 233);
-  z-index: 1;
-}
-.web-head-temp{
-  z-index: 2;
-}
-.web-head-temp.left{
-  z-index: 2;
-}
-.web-head.left{
-  z-index: 1;
-}
-.web-head-temp.right{
-  z-index: 1;
-}
-.web-head.right{
-  z-index: 2;
+    z-index: 1;
 }
 
 
 
-.fade350-enter{
-  animation: fadeIn 350ms forwards;
+.headbarFaded-enter{
+    animation: fadeIn 350ms forwards;
 }
-.fade350-leave{
-  animation: fadeOut 350ms forwards;
+.headbarFaded-leave{
+    animation: fadeOut 350ms forwards;
 }
 
-.headAnim-enter.left{
-  animation: fadeInRight 350ms forwards;
+.headbarChild-enter.left{
+    animation: headbarFromRightToCenter 350ms ease-out forwards;
+    z-index: 1;
 }
-.headAnim-leave.left{
-  animation: fadeOutLeft 350ms forwards;
+.headbarChild-leave.left{
+    animation: headbarFromCenterToLeft 350ms ease-in forwards;
+    z-index: 2;
 }
-.headAnim-enter.right{
-  animation: fadeInLeft 350ms forwards;
+.headbarChild-enter.right{
+    animation: headbarFromLeftToCenter 350ms ease-out forwards;
+    z-index: 2;
 }
-.headAnim-leave.right{
-  animation: fadeOutRight 350ms forwards;
+.headbarChild-leave.right{
+    animation: headbarFromCenterToRight 350ms ease-in forwards;
+    z-index: 1;
 }
+
+.headbarTemp-enter{
+    animation: fadeOut 350ms forwards;
+}
+.headbarTemp-leave{
+    animation: fadeIn 350ms forwards;
+}
+
+
+
+@keyframes headbarFromRightToCenter{
+    from {
+        transform: translate3d(100%,0,0);
+        opacity: 0.3;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+@keyframes headbarFromCenterToLeft{
+    from {
+        transform: translate3d(0,0,0);
+        opacity: 1;
+    }
+    to {
+        transform: translate3d(-100%, 0, 0);
+        opacity: 0;
+    }
+}
+
+@keyframes headbarFromLeftToCenter{
+    from {
+        transform: translate3d(-100%,0,0);
+        opacity: 0.3;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+@keyframes headbarFromCenterToRight{
+    from {
+        transform: translate3d(0,0,0);
+        opacity: 1;
+    }
+    to {
+        transform: translate3d(100%, 0, 0);
+        opacity: 0;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 .move-enter.fade{
@@ -120,4 +180,15 @@ html,body,.web-app,.web-browsers,.web-browser,.web-views,.web-view{
     to{
         transform: translate3d(100%,0,0);
     }
+}
+
+.red{
+    background-color: red;
+}
+.green{
+    background-color: green;
+}
+
+.white{
+    background-color: #fff;
 }

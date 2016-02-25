@@ -82,11 +82,12 @@ simplize.ready(function() {
     indexBrowser.$active(function() {
         this.$render('a', {
             before: function(){
-                this.$headbar.left.icon='1';
-                this.$headbar.left.text="left1";
-                this.$headbar.center.text = 'page1';
-                this.$headbar.right.icon='1';
-                this.$headbar.right.text='right1';
+                this.$headbar.left.icon='';
+                this.$headbar.left.text="";
+                this.$headbar.center.text = 'Simplize Demo Index';
+                this.$headbar.right.icon='<i class="fa fa-sliders"></i>';
+                this.$headbar.right.text='Set';
+                this.$headbar.class = 'white';
             }
         });
     });
@@ -94,14 +95,15 @@ simplize.ready(function() {
     indexBrowser.$active('/a/b/c/d', function() {
             this.$render('b', {
                 before: function(){
-                    this.$headbar.center.text = 'page2';
-                    this.$headbar.left.icon='2';
-                    this.$headbar.left.text="返回2";
+                    this.$headbar.center.text = 'Simplize Blog Naps';
+                    this.$headbar.left.icon='<i class="fa fa-angle-left"></i>';
+                    this.$headbar.left.text="Back";
                     this.$headbar.left.fn=function(){
                       history.back();
                     }
-                    this.$headbar.right.icon='2';
-                    this.$headbar.right.text='right2';
+                    this.$headbar.right.icon='';
+                    this.$headbar.right.text='';
+                    this.$headbar.class = 'white';
                 }
             })
         })
