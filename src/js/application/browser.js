@@ -9,7 +9,7 @@ exports.get = function(name){
     return this.$refs[utils.camelize('browser-' + name)];
 }
 
-exports.run = function(url, next){
+exports.run = function(next, url){
     this.$url = url;
     this.$nextcb = next;
     this.$next.run();

@@ -62,6 +62,7 @@ simplize.ready(function() {
     var aWebview = indexBrowser.$webview('a');
     var headbar = indexBrowser.$headbar;
     // /a/b/c/d
+    app.$use(simplize.localConnect());
     app.$use(indexBrowser);
 
     // /indexBrowser.$route('a');
@@ -80,6 +81,7 @@ simplize.ready(function() {
     //     });
     // });
     //indexBrowser.$route('a');
+    indexBrowser.$use(simplize.localConnect());
     indexBrowser.$active(function() {
         this.$render('a', {
             before: function(){
@@ -94,20 +96,20 @@ simplize.ready(function() {
     });
 
     indexBrowser.$active('/a/b/c/d', function() {
-            this.$render('b', {
-                before: function(){
-                    this.$headbar.center.text = 'Simplize Blog Naps';
-                    this.$headbar.left.icon='<i class="fa fa-angle-left"></i>';
-                    this.$headbar.left.text="Back";
-                    this.$headbar.left.fn=function(){
-                      history.back();
-                    }
-                    this.$headbar.right.icon='';
-                    this.$headbar.right.text='';
-                    this.$headbar.class = 'white';
+        this.$render('b', {
+            before: function(){
+                this.$headbar.center.text = 'Simplize Blog Naps';
+                this.$headbar.left.icon='<i class="fa fa-angle-left"></i>';
+                this.$headbar.left.text="Back";
+                this.$headbar.left.fn=function(){
+                  history.back();
                 }
-            })
+                this.$headbar.right.icon='';
+                this.$headbar.right.text='';
+                this.$headbar.class = 'white';
+            }
         })
-        console.log(app);
+    });
+    console.log(app);
     app.$run();
 });

@@ -20,6 +20,7 @@ var next = require('./next');
 var layer = require('./application/layer');
 var keeper = require('./application/session');
 var viewport = require('./application/viewport');
+var middlewares = require('./middlewares');
 var sessions = keeper.pool;
 Vue.debug = true;
 /**
@@ -79,6 +80,9 @@ simplize.viewport = function(type){
 }
 
 simplize.ready = function(cb){
+    for ( var i in middlewares ){
+        simplize[i] = middlewares[i];
+    }
     domReady(function(){
         simplize.$root = createRoot();
         simplize.$html = utils.$query(document, 'html');
@@ -132,27 +136,37 @@ simplize.run = function(newValue, oldValue){
 
 simplize.push = function(method, path, opts, fn){
     var Layer = new layer(method, path, opts, fn);
-    var that = this;
     simplize.app.$next.use(function(next){
         if ( Layer.match(this.req.path) ){
             var distURL = this.req.path.replace(Layer.path, '') || '/';
             if ( !/^\//.test(distURL) ) distURL = '/' + distURL;
             this.req.params = Layer.params || {};
-            return Layer.handle.call(this, distURL, next);
+            return Layer.handle.call(this, next, distURL);
         }
         next();
     });
 }
 
 simplize.use = function(router, brw){
-    if ( utils.$type(brw, 'string') ){
-        brw = simplize.app.$browser(brw);
-    }
     if ( !brw ){
         brw = router;
         router = '/';
     }
-    simplize.push('browser', router || '/', utils.$looser, brw.$run);
+
+    var type = utils.$type(brw);
+    var fn;
+
+    if ( type === 'string' ){
+        brw = simplize.app.$browser(brw);
+        fn = brw.$run;
+    }else if ( type === 'function' ){
+        fn = brw;
+    }else if ( type === 'object' && brw._isVue ){
+        fn = brw.$run;
+    }
+
+    typeof fn === 'function'
+        && simplize.push('browser', router || '/', utils.$looser, fn);
 }
 
 simplize.hashChange = function(){

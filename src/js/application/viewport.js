@@ -1,6 +1,4 @@
-var _ = require('../utils');
 var view, width, percent, baseWidth, offset = 100;
-var isAndroid = _.isAndroid;
 var strap = 0;
 
 
@@ -10,9 +8,6 @@ function getViewPortWidth(){
 
 function computedViewPortPercent(){
     percent = (width / baseWidth).toFixed(4);
-    // if ( isAndroid && width > baseWidth ){
-    //     percent = 1;
-    // }
 }
 
 function computedRetinaPercent(){
