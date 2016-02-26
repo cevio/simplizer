@@ -1,9 +1,11 @@
 var simplize = require('./main');
 var database = require('./data');
+var Vue = require('vue')
 
 simplize.ready(function() {
     simplize.viewport('retina');
     var app = simplize(database);
+    app.env.debug = true;
 
     app.$on('end', function() {
         console.log('pass');

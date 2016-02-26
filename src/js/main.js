@@ -21,8 +21,15 @@ var layer = require('./application/layer');
 var keeper = require('./application/session');
 var viewport = require('./application/viewport');
 var middlewares = require('./middlewares');
+var debug = require('./application/debug');
 var sessions = keeper.pool;
-Vue.debug = true;
+
+/**
+ * 默认模式， 关闭
+ */
+Vue.config.debug = false;
+Vue.config.silent = true;
+Vue.config.convertAllProperties = false;
 /**
  *  expose proxy.
  */
@@ -61,7 +68,8 @@ function simplize(options){
             $redirect: redirect
         },
         watch: {
-            "req.href": simplize.run
+            "req.href": simplize.run,
+            "env.debug": debug
         },
         events: {
             end: function(){
@@ -70,6 +78,9 @@ function simplize(options){
         }
     });
 }
+
+simplize.nextTick = utils.nextTick;
+simplize.Vue = Vue;
 
 simplize.viewport = function(type){
     viewport(type);
