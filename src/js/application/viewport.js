@@ -1,3 +1,4 @@
+var resource = require('../resource');
 var view, width, percent, baseWidth, offset = 100;
 var strap = 0;
 
@@ -31,6 +32,9 @@ function resize(){
     }else{
         computedViewPortPercent();
     }
+
+    resource.env.viewType = baseWidth;
+    resource.env.viewScale = percent;
 
     keeper.push('width=' + (width > baseWidth ? baseWidth : 'device-width'));
     //isAndroid && keeper.push('target-densitydpi=high-dpi');

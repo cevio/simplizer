@@ -3,8 +3,8 @@ var animationend = require('animationend');
 exports.component = {
     name: 'headbar',
     template:
-        '<div class="web-headbar" v-if="status" :transition="transition3 | fixAnimation">' +
-            '<div class="web-head" :class="class" :style="style" v-show="show">' +
+        '<div class="web-headbar" v-if="status" :transition="transition3 | fixAnimation" v-el:head-out>' +
+            '<div class="web-head" :class="class" :style="style" v-show="show" v-el:head-bar>' +
                 '<div class="web-headbar-left" @click="left.fn">' +
                     '<div class="icon-content" v-html="left.icon" v-if="open" :transition="transition2 | fixAnimation" :class="direction"></div>' +
                     '<div class="text-content" v-html="left.text" v-if="open" :transition="transition1 | fixAnimation" :class="direction"></div>' +
@@ -60,9 +60,11 @@ exports.component = {
     methods: {
         listen: function(){
             var that = this;
-            utils.nextTick(listen);
-            function listen(){
-                var el = that.useItemAnimation ? that.$el.nextSibling.querySelector('.web-head') : that.$el.nextSibling;
+            utils.nextTick(function(){
+                var el = that.useItemAnimation
+                    ? that.$els.headBar
+                    : that.$els.headOut;
+
                 animationend(el).then(function(){
                     that.temp.transition = '';
                     utils.nextTick(function(){
@@ -76,7 +78,7 @@ exports.component = {
                         that.useItemAnimation = true;
                     })
                 });
-            }
+            });
         }
     },
     events: {

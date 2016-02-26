@@ -11,11 +11,15 @@ exports.wrapWebviewHTML = function(webviews){
 
         (function(name, options, database){
             utils.extend(database, options.data || {});
+            if ( options.keepAlive == undefined ){
+                options.keepAlive = true;
+            }
             result[name] = options;
             var template = utils.getTemplate(options.template || "template[name='" + i + "']");
+            var mode = options.keepAlive ? 'v-show="status"' : 'v-if="status"';
             html.push('<' + name + ' v-ref:' + name + ' :' + name + '-req.sync="req" :' + name + '-env.sync="env"></' + name + '>');
             result[name].name = 'webview';
-            result[name].template = '<div class="web-view" v-show="status" transition="move" :class="direction | fixAnimation">' + template + '</div>';
+            result[name].template = '<div class="web-view" ' + mode + ' transition="move" :class="direction | fixAnimation">' + template + '</div>';
             result[name].props = [name + '-req', name + '-env'];
             var camelizeReq = utils.camelize(name + '-req');
             var camelizeEnv = utils.camelize(name + '-env');
@@ -85,7 +89,7 @@ exports.wrapWebviewHTML = function(webviews){
 
 
 
-            
+
 
             result[name].data = function(){
                 return database;

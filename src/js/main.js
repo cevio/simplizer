@@ -22,7 +22,10 @@ var keeper = require('./application/session');
 var viewport = require('./application/viewport');
 var middlewares = require('./middlewares');
 var debug = require('./application/debug');
+var os = require('./application/os');
 var sessions = keeper.pool;
+var windowTouchMoveDisabled = false; // 禁止window的touchmove事件 默认false（可以move）
+var windowTouchMoveDisabledEventFunction = null;
 
 /**
  * 默认模式， 关闭
@@ -50,8 +53,29 @@ Vue.mixin({
             if ( resource.env.disableAnimation ){ return ''; }
             else{ return cls; }
         }
+    },
+    computed: {
+        windowTouchMoveDisabled: {
+            get: function(){ return !!windowTouchMoveDisabled; },
+            set: function(value){
+                windowTouchMoveDisabled = !!value;
+                if ( !!value ){
+                    if ( typeof windowTouchMoveDisabledEventFunction != 'function' ){
+                        windowTouchMoveDisabledEventFunction = windowDisableMove;
+                        Vue.util.on(window, 'touchmove', windowTouchMoveDisabledEventFunction);
+                    }
+                }else{
+                    Vue.util.off(window, 'touchmove', windowTouchMoveDisabledEventFunction);
+                    windowTouchMoveDisabledEventFunction = null;
+                }
+            }
+        }
     }
 });
+
+function windowDisableMove(e){
+    e.preventDefault();
+}
 
 function simplize(options){
     simplize.init();
@@ -123,6 +147,7 @@ simplize.init = function(){
 
     resource.req = result;
 
+    os(simplize);
     simplize.session();
     utils.setURI(sessions, result.href);
 
@@ -255,16 +280,16 @@ function createRoot(){
 function fixConfigs(options){
     var result = {}, innerHTML = [];
     for ( var i in options ){
-        var name = 'browser-' + i, data = { status: false, headbarHeight: 0 };
+        var name = 'browser-' + i, data = { status: false };
         innerHTML.push('<' + name + ' v-ref:' + name + ' :' + name + '-req.sync="req" :' + name + '-env.sync="env"></' + name + '>');
 
-        (function(distoptions, database){
+        (function(_options, database){
 
-            result[name] = distoptions;
+            result[name] = _options;
             toolbar.tbfix(result[name], database);
 
             var webviewWraper = webviews.wrapWebviewHTML(result[name].webviews || {});
-            var mode = distoptions.keepAlive ? 'v-show="status"' : 'v-if="status"';
+            var mode = _options.keepAlive ? 'v-show="status"' : 'v-if="status"';
             result[name].template = '<div class="web-browser" ' + mode + ' :transition="\'fade\' | fixAnimation"><headbar v-ref:headbar></headbar><div class="web-views">' + webviewWraper.html + '</div></div>';
             result[name].components = webviewWraper.result;
             result[name].components.headbar = result[name].headbar || headbar.component;
@@ -275,6 +300,10 @@ function fixConfigs(options){
             result[name].props = [name + '-req', name + '-env'];
             var camelizeReq = utils.camelize(name + '-req');
             var camelizeEnv = utils.camelize(name + '-env');
+
+            /**
+             * extend computed objects
+             */
             var computeds = {
                 req: {
                     set: function(value){ this[camelizeReq] = value; },
@@ -288,12 +317,12 @@ function fixConfigs(options){
                     return this.$root.$toolbar;
                 }
             }
-            if ( distoptions.keepAlive ){
+            if ( _options.keepAlive ){
                 computeds.$headbar = function(){
                     return this.$refs.headbar;
                 }
             }
-            utils.$extend(computeds, distoptions.computed || {});
+            utils.$extend(computeds, _options.computed || {});
             result[name].computed = computeds;
 
             /**
@@ -308,7 +337,7 @@ function fixConfigs(options){
                 $route: browser.route,
                 $redirect: browser.redirect
             }
-            utils.$extend(methods, distoptions.methods || {});
+            utils.$extend(methods, _options.methods || {});
             result[name].methods = methods;
 
             /**
@@ -328,7 +357,7 @@ function fixConfigs(options){
                     this.$broadcast('initHeadbar', height);
                 }
             }
-            utils.$extend(events, distoptions.events || {});
+            utils.$extend(events, _options.events || {});
             result[name].events = events;
 
             /**
@@ -347,10 +376,10 @@ function fixConfigs(options){
                     }
                 }
             }
-            utils.$extend(watches, distoptions.watch || {});
+            utils.$extend(watches, _options.watch || {});
             result[name].watch = watches;
 
-            utils.$extend(database, distoptions.data || {});
+            utils.$extend(database, _options.data || {});
             result[name].data = function(){ return database; }
 
         }).call(this, options[i], data);
