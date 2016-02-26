@@ -42,7 +42,6 @@ module.exports = function(oldbrowser, newBrowser, oldwebview, webview, direction
         if ( canin ){
             if ( !fixAnimation ){
                 var $direction = app.$history;
-                $headbar && $headbar.listen();
                 load($headbar, webview, after);
                 unload(oldwebview)
                 oldwebview.status = false;

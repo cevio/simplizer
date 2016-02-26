@@ -1,5 +1,6 @@
 var utils = require('../utils');
 var redirect = require('./redirect');
+var animationend = require('animationend');
 exports.wrapWebviewHTML = function(webviews){
     var result = {}, html = [];
     for ( var i in webviews ){
@@ -57,6 +58,12 @@ exports.wrapWebviewHTML = function(webviews){
             utils.$extend(methods, options.methods || {});
             result[name].methods = methods;
 
+            var events = {
+                hideHeadbar: hideHeadbar
+            }
+            utils.$extend(events, options.events || {});
+            result[name].events = events;
+
             result[name].data = function(){
                 return database;
             }
@@ -70,4 +77,16 @@ exports.wrapWebviewHTML = function(webviews){
 
 exports.get = function(name){
     return this.$refs[utils.camelize('webview-' + name)];
+}
+
+function hideHeadbar(){
+    var that = this;
+    var browser = this.$parent;
+    utils.nextTick(function(){
+        var current = browser.$ActiveWebview;
+        if ( current == that ){
+            browser.$headbar.$emit('hide', browser, that);
+        }
+    });
+
 }

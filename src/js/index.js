@@ -22,6 +22,7 @@ simplize.ready(function() {
         this.$cookie.$add('evio', {a:1})
         this.$render('a', {
             before: function(){
+                this.$headbar.status = true;
                 this.$headbar.left.icon='';
                 this.$headbar.left.text="";
                 this.$headbar.center.text = 'Simplize Demo Index';
@@ -35,6 +36,7 @@ simplize.ready(function() {
     indexBrowser.$active('/a/b/c/d', function() {
         this.$render('b', {
             before: function(){
+                this.$headbar.status = false;
                 this.$headbar.center.text = 'Simplize Blog Naps';
                 this.$headbar.left.icon='<i class="fa fa-angle-left"></i>';
                 this.$headbar.left.text="Back";

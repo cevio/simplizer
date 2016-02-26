@@ -309,6 +309,9 @@ function fixConfigs(options){
             var events = {
                 end: function(){
                     this.$nextcb && this.$nextcb();
+                },
+                hideHeadbar: function(){
+                    this.$broadcast('hideHeadbar');
                 }
             }
             utils.$extend(events, distoptions.events || {});

@@ -37,13 +37,14 @@ exports.component = {
             class: '',
             style: '',
 
+            useItemAnimation: true,
             direction: '', // 动画方向
             status: true, // 是否显示headbar
             open: true, // 内部元素动画状态
             show: true, //动画容器状态
             transition1: 'headbarChild', // 内部元素的动画方式1
             transition2: 'headbarFaded', // 内部元素的动画方式2
-            transition3: 'headbarFaded', // 显示headbar时候的动画
+            transition3: 'head', // 显示headbar时候的动画
             temp: {
                 open: false,
                 show: false,
@@ -59,18 +60,23 @@ exports.component = {
     methods: {
         listen: function(){
             var that = this;
-            animationend(this.$el.nextSibling.querySelector('.web-head')).then(function(){
-                that.temp.transition = '';
-                utils.nextTick(function(){
-                    that.show = true;
-                    that.temp.show = false;
-                    that.direction = '';
-                    that.transition1 = '';
-                    that.transition2 = '';
-                    that.open = true;
-                    that.temp.open = false;
-                })
-            });
+            utils.nextTick(listen);
+            function listen(){
+                var el = that.useItemAnimation ? that.$el.nextSibling.querySelector('.web-head') : that.$el.nextSibling;
+                animationend(el).then(function(){
+                    that.temp.transition = '';
+                    utils.nextTick(function(){
+                        that.show = true;
+                        that.temp.show = false;
+                        that.direction = '';
+                        that.transition1 = '';
+                        that.transition2 = '';
+                        that.open = true;
+                        that.temp.open = false;
+                        that.useItemAnimation = true;
+                    })
+                });
+            }
         }
     },
     events: {
@@ -88,8 +94,11 @@ exports.component = {
 
 
             utils.nextTick(function(){
-                that.transition1 = 'headbarChild';
-                that.transition2 = 'headbarFaded';
+                that.listen();
+                if ( that.useItemAnimation ){
+                    that.transition1 = 'headbarChild';
+                    that.transition2 = 'headbarFaded';
+                }
                 that.open = true;
                 that.temp.open = false;
             });
@@ -108,8 +117,11 @@ exports.component = {
 
 
             utils.nextTick(function(){
-                that.transition1 = 'headbarChild';
-                that.transition2 = 'headbarFaded';
+                that.listen();
+                if ( that.useItemAnimation ){
+                    that.transition1 = 'headbarChild';
+                    that.transition2 = 'headbarFaded';
+                }
                 that.open = true;
                 that.temp.open = false;
             });
@@ -122,6 +134,14 @@ exports.component = {
             this.temp.center.text = this.center.text;
             this.temp.class = this.class;
             this.temp.style = this.style;
+        },
+        hide: function(browser, webview){
+            var node = webview.$el;
+            animationend(node).then(function(){
+                node.classList.remove('nopadding');
+                browser.headbarHeight = 0;
+            })
+            node.classList.add('nopadding');
         }
     },
     ready: function(){
@@ -132,6 +152,9 @@ exports.component = {
         "status": function(value){
             if ( !!value ){
                 this.$parent.headbarHeight = this.$el.nextSibling.clientHeight;
+                this.useItemAnimation = false;
+            }else{
+                this.$parent.$emit('hideHeadbar');
             }
         }
     }

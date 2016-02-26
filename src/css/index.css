@@ -187,6 +187,41 @@ html,body,.web-app,.web-browsers,.web-browser,.web-views,.web-view{
     }
 }
 
+
+
+
+
+.nopadding{
+    -webkit-transition: all 350ms linear;
+    padding-top: 0!important;
+}
+
+.head-enter{
+    animation: headIn 350ms forwards;
+}
+.head-leave{
+    animation: headOut 350ms forwards;
+}
+
+@keyframes headIn{
+    from{
+        transform: translate3d(0,-100%, 0);
+    }
+    to{
+        transform: translate3d(0,0,0);
+    }
+}
+
+@keyframes headOut{
+    from{
+        transform: translate3d(0,0, 0);
+    }
+    to{
+        transform: translate3d(0,-100%,0);
+    }
+}
+
+
 .red{
     background-color: red;
 }
