@@ -1,32 +1,34 @@
 var utils = require('../utils');
-var locals = {};
+var cookie = require('./cookie');
 var out = {};
 var installed = false;
 
-module.exports = function(){
+module.exports = function(options){
     return function(next){
-        !installed && make();
-        this.$locals = out;
+        options = options || {};
+        !installed && make(options);
+        this.$cookie = out;
         next();
     }
 }
 
-function make(){
-    var store = window.localStorage;
-    for ( var i in store ){
+function make(options){
+    var result = cookie.get() || {};
+    for ( var i in result ){
         var key = i;
-        var value = store.getItem(i);
+        var value = result[i];
         try{ value = JSON.parse(value); }catch(e){}
-        define(key, value);
+        define(key, value, options);
     }
-    defineMethods();
+    defineMethods(options);
     installed = true;
 }
 
-function define(key, value){
+function define(key, value, options){
     var $key = key;
     var $value = value; // 真实值
     var $text = ''; // 文本值
+    var _options = utils.$copy(options);
     Object.defineProperty(out, key, {
         enumerable: true,
         configurable: true,
@@ -45,7 +47,7 @@ function define(key, value){
         }
     });
     function save(){
-        window.localStorage.setItem($key, $text);
+        cookie.set($key, $text, _options);
     }
 }
 
@@ -56,13 +58,15 @@ function stringify(value){
     return value;
 }
 
-function defineMethods(){
+function defineMethods(options){
     Object.defineProperties(out, {
         "$add": {
             enumerable: false,
             configurable: false,
-            value: function(key, value){
-                define(key, value);
+            value: function(key, value, configs){
+                var _options = utils.$copy(options);
+                utils.extend(_options, configs || {});
+                define(key, value, _options);
                 this[key] = value;
             }
         },
@@ -72,7 +76,7 @@ function defineMethods(){
             value: function(name){
                 if ( this[name] != undefined ){
                     delete this[name];
-                    window.localStorage.removeItem(name);
+                    cookie.remove(name);
                 }
             }
         }

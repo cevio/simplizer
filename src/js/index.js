@@ -82,7 +82,9 @@ simplize.ready(function() {
     // });
     //indexBrowser.$route('a');
     indexBrowser.$use(simplize.localConnect());
+    indexBrowser.$use(simplize.cookieConnect());
     indexBrowser.$active(function() {
+        this.$cookie.$add('evio', {a:1})
         this.$render('a', {
             before: function(){
                 this.$headbar.left.icon='';

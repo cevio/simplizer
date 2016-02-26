@@ -15,7 +15,7 @@ exports.$type = function(obj, type){
 };
 
 exports.$copy = function(data){
-    var type = this.type(data).toLowerCase();
+    var type = this.$type(data).toLowerCase();
     var result;
     if ( type === 'object' ){
         result = {};
