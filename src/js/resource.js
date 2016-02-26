@@ -1,2 +1,4 @@
 exports.req = {};
-exports.env = {};
+exports.env = {
+    disableAnimation: false
+};

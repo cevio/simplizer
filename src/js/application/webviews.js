@@ -14,7 +14,7 @@ exports.wrapWebviewHTML = function(webviews){
             var template = utils.getTemplate(options.template || "template[name='" + i + "']");
             html.push('<' + name + ' v-ref:' + name + ' :' + name + '-req.sync="req" :' + name + '-env.sync="env"></' + name + '>');
             result[name].name = 'webview';
-            result[name].template = '<div class="web-view" v-show="status" transition="move" :class="direction" :style="{paddingTop: headbarHeight}">' + template + '</div>';
+            result[name].template = '<div class="web-view" v-show="status" transition="move" :class="direction | fixAnimation" :style="{paddingTop: headbarHeight}">' + template + '</div>';
             result[name].props = [name + '-req', name + '-env'];
             var camelizeReq = utils.camelize(name + '-req');
             var camelizeEnv = utils.camelize(name + '-env');

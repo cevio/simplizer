@@ -35,6 +35,15 @@ Vue.mixin({
     },
     directives: {
         redirect: directiveRedirect
+    },
+    filters: {
+        fixAnimation: function(cls){
+            if ( resource.env.disableAnimation ){
+                return '';
+            }else{
+                return cls;
+            }
+        }
     }
 });
 
@@ -228,7 +237,7 @@ function fixConfigs(options){
 
             var webviewWraper = webviews.wrapWebviewHTML(result[name].webviews || {});
             var mode = distoptions.keepAlive ? 'v-show="status"' : 'v-if="status"';
-            result[name].template = '<div class="web-browser" ' + mode + ' transition="fade"><headbar v-ref:headbar></headbar><div class="web-views">' + webviewWraper.html + '</div></div>';
+            result[name].template = '<div class="web-browser" ' + mode + ' :transition="\'fade\' | fixAnimation"><headbar v-ref:headbar></headbar><div class="web-views">' + webviewWraper.html + '</div></div>';
             result[name].components = webviewWraper.result;
             result[name].components.headbar = result[name].headbar || headbar.component;
 
