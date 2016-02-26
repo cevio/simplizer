@@ -1,6 +1,7 @@
 var simplize = require('./main');
 
 simplize.ready(function() {
+    simplize.viewport('retina');
     var app = simplize({
         "index": {
             title: "首页",

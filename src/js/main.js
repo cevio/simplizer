@@ -19,6 +19,7 @@ var directiveRedirect = require('./directives/redirect');
 var next = require('./next');
 var layer = require('./application/layer');
 var keeper = require('./application/session');
+var viewport = require('./application/viewport');
 var sessions = keeper.pool;
 Vue.debug = true;
 /**
@@ -70,6 +71,11 @@ function simplize(options){
             }
         }
     });
+}
+
+simplize.viewport = function(type){
+    viewport(type);
+    utils.addClass(simplize.$html, 'viewport-' + type);
 }
 
 simplize.ready = function(cb){
