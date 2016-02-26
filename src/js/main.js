@@ -23,9 +23,14 @@ var viewport = require('./application/viewport');
 var middlewares = require('./middlewares');
 var debug = require('./application/debug');
 var os = require('./application/os');
+
+/**
+ *  load vars.
+ */
 var sessions = keeper.pool;
 var windowTouchMoveDisabled = false; // 禁止window的touchmove事件 默认false（可以move）
 var windowTouchMoveDisabledEventFunction = null;
+var toolbarComponent = null;
 
 /**
  * 默认模式， 关闭
@@ -61,7 +66,7 @@ Vue.mixin({
                 windowTouchMoveDisabled = !!value;
                 if ( !!value ){
                     if ( typeof windowTouchMoveDisabledEventFunction != 'function' ){
-                        windowTouchMoveDisabledEventFunction = windowDisableMove;
+                        windowTouchMoveDisabledEventFunction = EventStop;
                         Vue.util.on(window, 'touchmove', windowTouchMoveDisabledEventFunction);
                     }
                 }else{
@@ -70,17 +75,23 @@ Vue.mixin({
                 }
             }
         }
+    },
+    methods: {
+        $Go: function(i){ history.go(i) },
+        $Goback: function(){ history.back(); },
+        $GoForward: function(){ history.forward(); }
     }
 });
 
-function windowDisableMove(e){
+function EventStop(e){
     e.preventDefault();
 }
 
 function simplize(options){
+    toolbarComponent = toolbarComponent || toolbar;
     simplize.init();
     var components = fixConfigs(options);
-    components.toolbar = toolbar.component;
+    components.toolbar = toolbarComponent.component;
     return simplize.app = new Vue({
         el: simplize.$root,
         data: resource,
@@ -105,6 +116,11 @@ function simplize(options){
 
 simplize.nextTick = utils.nextTick;
 simplize.Vue = Vue;
+simplize.stop = EventStop;
+
+simplize.$toolbar = function(toolbar){
+    toolbarComponent = toolbar;
+}
 
 simplize.viewport = function(type){
     viewport(type);
