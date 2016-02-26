@@ -40,11 +40,8 @@ Vue.mixin({
     },
     filters: {
         fixAnimation: function(cls){
-            if ( resource.env.disableAnimation ){
-                return '';
-            }else{
-                return cls;
-            }
+            if ( resource.env.disableAnimation ){ return ''; }
+            else{ return cls; }
         }
     }
 });
@@ -312,6 +309,12 @@ function fixConfigs(options){
                 },
                 hideHeadbar: function(){
                     this.$broadcast('hideHeadbar');
+                },
+                showHeadbar: function(height){
+                    this.$broadcast('showHeadbar', height);
+                },
+                initHeadbar: function(height){
+                    this.$broadcast('initHeadbar', height);
                 }
             }
             utils.$extend(events, distoptions.events || {});

@@ -13,11 +13,10 @@ simplize.ready(function() {
     var aWebview = indexBrowser.$webview('a');
     var headbar = indexBrowser.$headbar;
     // /a/b/c/d
-    app.$use(simplize.localConnect());
     app.$use(indexBrowser);
     // /indexBrowser.$route('a');
-    indexBrowser.$use(simplize.localConnect());
-    indexBrowser.$use(simplize.cookieConnect());
+    indexBrowser.$use(simplize.localStorage());
+    indexBrowser.$use(simplize.cookieStorage());
     indexBrowser.$active(function() {
         this.$cookie.$add('evio', {a:1})
         this.$render('a', {
@@ -36,7 +35,7 @@ simplize.ready(function() {
     indexBrowser.$active('/a/b/c/d', function() {
         this.$render('b', {
             before: function(){
-                this.$headbar.status = false;
+                this.$headbar.status = true;
                 this.$headbar.center.text = 'Simplize Blog Naps';
                 this.$headbar.left.icon='<i class="fa fa-angle-left"></i>';
                 this.$headbar.left.text="Back";

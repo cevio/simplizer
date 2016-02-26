@@ -3,18 +3,18 @@ var animationend = require('animationend');
 exports.component = {
     name: 'headbar',
     template:
-        '<div class="web-headbar" v-if="status" :transition="transition3">' +
+        '<div class="web-headbar" v-if="status" :transition="transition3 | fixAnimation">' +
             '<div class="web-head" :class="class" :style="style" v-show="show">' +
                 '<div class="web-headbar-left" @click="left.fn">' +
-                    '<div class="icon-content" v-html="left.icon" v-if="open" :transition="transition2" :class="direction"></div>' +
-                    '<div class="text-content" v-html="left.text" v-if="open" :transition="transition1" :class="direction"></div>' +
+                    '<div class="icon-content" v-html="left.icon" v-if="open" :transition="transition2 | fixAnimation" :class="direction"></div>' +
+                    '<div class="text-content" v-html="left.text" v-if="open" :transition="transition1 | fixAnimation" :class="direction"></div>' +
                 '</div>' +
                 '<div class="web-headbar-center" @click="center.fn">' +
-                    '<div class="web-headbar-center-text" v-html="center.text" v-if="open" :transition="transition1" :class="direction"></div>' +
+                    '<div class="web-headbar-center-text" v-html="center.text" v-if="open" :transition="transition1 | fixAnimation" :class="direction"></div>' +
                 '</div>' +
                 '<div class="web-headbar-right" @click="right.fn">' +
-                    '<div class="text-content" v-html="right.text" v-if="open" :transition="transition1" :class="direction"></div>' +
-                    '<div class="icon-content" v-html="right.icon" v-if="open" :transition="transition2" :class="direction"></div>' +
+                    '<div class="text-content" v-html="right.text" v-if="open" :transition="transition1 | fixAnimation" :class="direction"></div>' +
+                    '<div class="icon-content" v-html="right.icon" v-if="open" :transition="transition2 | fixAnimation" :class="direction"></div>' +
                 '</div>' +
             '</div>' +
             '<div class="web-head web-head-temp" :class="temp.class" :style="temp.style" v-if="temp.show" :transition="temp.transition">' +
@@ -136,22 +136,20 @@ exports.component = {
             this.temp.style = this.style;
         },
         hide: function(browser, webview){
-            var node = webview.$el;
-            animationend(node).then(function(){
-                node.classList.remove('nopadding');
-                browser.headbarHeight = 0;
-            })
-            node.classList.add('nopadding');
+            webview.$el.style.paddingTop = 0;
+        },
+        show: function(browser, webview, height){
+            webview.$el.style.paddingTop = height;
         }
     },
     ready: function(){
         this.$parent.$headbar = this;
-        this.$parent.headbarHeight = this.$el.nextSibling.clientHeight;
+        this.status && this.$parent.$emit('initHeadbar', this.$el.nextSibling.clientHeight);
     },
     watch: {
         "status": function(value){
             if ( !!value ){
-                this.$parent.headbarHeight = this.$el.nextSibling.clientHeight;
+                this.$parent.$emit('showHeadbar', this.$el.nextSibling.clientHeight);
                 this.useItemAnimation = false;
             }else{
                 this.$parent.$emit('hideHeadbar');

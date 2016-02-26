@@ -1,2 +1,2 @@
-exports.localConnect = require('./localstorage');
-exports.cookieConnect = require('./cookies');
+exports.localStorage = require('./localstorage');
+exports.cookieStorage = require('./cookies');
