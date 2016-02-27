@@ -10,8 +10,10 @@ module.exports = function(name, options, toolbar){
     var mode = options.keepAlive ? 'v-show="status"' : 'v-if="status"';
     var camelizeReq = utils.camelize(name + '-req');
     var camelizeEnv = utils.camelize(name + '-env');
+    var ignores = ['name', 'template', 'components', 'props', 'computed', 'keepAlive', 'methods', 'events', 'watch', 'data', 'webviews', 'headbar'];
 
     toolbar.fix(options, data);
+    result.name = 'browser';
 
     /**
      *  browser template maker
@@ -113,6 +115,12 @@ module.exports = function(name, options, toolbar){
      */
     utils.$extend(data, options.data || {});
     result.data = function(){ return data; }
+
+    for ( var opt in options ){
+        if ( ignores.indexOf(opt) == -1 ){
+            result[opt] = options[opt];
+        }
+    }
 
     return result;
 }

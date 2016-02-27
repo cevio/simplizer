@@ -25,3 +25,14 @@ exports.setURI = function(uri, href){
         window.sessionStorage.setItem(this.sessionValueName, JSON.stringify(uri));
     }
 }
+
+exports.createRoot = function(){
+    var root = document.createElement('div');
+    document.body.insertBefore(root, document.body.firstChild);
+    this.addClass(root, 'web-app');
+    return root;
+}
+exports.stop = EventStop;
+function EventStop(e){
+    e.preventDefault();
+}

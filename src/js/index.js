@@ -7,6 +7,10 @@ simplize.ready(function() {
     var app = simplize(database);
     app.env.debug = true;
 
+    app.$on('ready', function(){
+        console.log('app is ready');
+    })
+
     app.$on('end', function() {
         console.log('pass');
     });

@@ -5,6 +5,7 @@ module.exports = function(name, options, item){
     var data = { status: false, direction: 'slient' };
     var camelizeReq = utils.camelize(name + '-req');
     var camelizeEnv = utils.camelize(name + '-env');
+    var ignores = ['name', 'data', 'keepAlive', 'template', 'computed', 'watch', 'methods', 'events'];
 
     result.name= 'webviw';
 
@@ -85,6 +86,12 @@ module.exports = function(name, options, item){
          initHeadbar: initHeadbar
      }
      utils.$extend(result.events, events);
+
+     for ( var opt in options ){
+         if ( ignores.indexOf(opt) == -1 ){
+             result[opt] = options[opt];
+         }
+     }
 
      return {
          component: result,

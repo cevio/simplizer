@@ -4,6 +4,9 @@
 var Vue = require('vue');
 var domReady = require('domready');
 var querystrings = require('querystrings');
+var animationend = require('animationend');
+var Promise = require('es6-promise').Promise;
+var pathToRegExp = require('path-to-regexp');
 
 /**
  *  load deps.
@@ -11,11 +14,9 @@ var querystrings = require('querystrings');
 var utils = require('./utils');
 var resource = require('./resource');
 var toolbar = require('./components/toolbar');
-var browserComponent = require('./components/browser');
+var operators = require('./application/options');
 var redirect = require('./application/redirect');
-var directiveRedirect = require('./directives/redirect');
 var browser = require('./application/browser');
-var next = require('./next');
 var layer = require('./application/layer');
 var keeper = require('./application/session');
 var viewport = require('./application/viewport');
@@ -27,9 +28,7 @@ var os = require('./application/os');
  *  load vars.
  */
 var sessions = keeper.pool;
-var windowTouchMoveDisabled = false; // 禁止window的touchmove事件 默认false（可以move）
-var windowTouchMoveDisabledEventFunction = null;
-var toolbarComponent = null;
+var first = true;
 
 /**
  * 默认模式， 关闭
@@ -43,54 +42,13 @@ Vue.config.convertAllProperties = false;
 module.exports = simplize;
 
 Vue.component('middle', require('./components/middle'));
-Vue.mixin({
-    created: function(){
-        this.$next = new next(function(){
-            this.$emit('end');
-        }, this);
-    },
-    directives: {
-        redirect: directiveRedirect
-    },
-    filters: {
-        fixAnimation: function(cls){
-            if ( resource.env.disableAnimation ){ return ''; }
-            else{ return cls; }
-        }
-    },
-    computed: {
-        windowTouchMoveDisabled: {
-            get: function(){ return !!windowTouchMoveDisabled; },
-            set: function(value){
-                windowTouchMoveDisabled = !!value;
-                if ( !!value ){
-                    if ( typeof windowTouchMoveDisabledEventFunction != 'function' ){
-                        windowTouchMoveDisabledEventFunction = EventStop;
-                        Vue.util.on(window, 'touchmove', windowTouchMoveDisabledEventFunction);
-                    }
-                }else{
-                    Vue.util.off(window, 'touchmove', windowTouchMoveDisabledEventFunction);
-                    windowTouchMoveDisabledEventFunction = null;
-                }
-            }
-        }
-    },
-    methods: {
-        $Go: function(i){ history.go(i) },
-        $Goback: function(){ history.back(); },
-        $GoForward: function(){ history.forward(); }
-    }
-});
-
-function EventStop(e){
-    e.preventDefault();
-}
+Vue.mixin(require('./application/mixins'));
 
 function simplize(options){
-    toolbarComponent = toolbarComponent || toolbar;
+    simplize.$toolbar = simplize.$toolbar || toolbar;
     simplize.init();
-    var components = fixConfigs(options);
-    components.toolbar = toolbarComponent.component;
+    var components = operators(simplize, options, simplize.$toolbar);
+    components.toolbar = simplize.$toolbar.component;
     return simplize.app = new Vue({
         el: simplize.$root,
         data: resource,
@@ -115,10 +73,19 @@ function simplize(options){
 
 simplize.nextTick = utils.nextTick;
 simplize.Vue = Vue;
-simplize.stop = EventStop;
+simplize.stop = utils.stop;
+simplize.util = utils;
+simplize.animationend = animationend;
+simplize.querystring = querystrings;
+simplize.Promise = Promise;
+simplize.pathToRegExp = pathToRegExp;
+simplize.routeLayer = layer;
+simplize.$toolbar = null;
 
-simplize.$toolbar = function(toolbar){
-    toolbarComponent = toolbar;
+simplize.plugin = function(object){
+    if ( typeof object.install === 'function' ){
+        object.install(simplize, resource);
+    }
 }
 
 simplize.viewport = function(type){
@@ -131,7 +98,7 @@ simplize.ready = function(cb){
         simplize[i] = middlewares[i];
     }
     domReady(function(){
-        simplize.$root = createRoot();
+        simplize.$root = utils.createRoot();
         simplize.$html = utils.$query(document, 'html');
         cb();
     });
@@ -179,6 +146,12 @@ simplize.run = function(newValue, oldValue){
     simplize.history(newValue, oldValue);
     utils.nextTick(function(){
         that.$next.run();
+        if ( first ){
+            simplize.nextTick(function(){
+                simplize.app.$emit('ready');
+                first = false;
+            });
+        }
     });
 }
 
@@ -282,23 +255,4 @@ simplize.session = function(){
     }
 
     sessions = locals;
-}
-
-
-function createRoot(){
-    var root = document.createElement('div');
-    document.body.insertBefore(root, document.body.firstChild);
-    utils.addClass(root, 'web-app');
-    return root;
-}
-
-function fixConfigs(options){
-    var result = {}, innerHTML = [];
-    for ( var i in options ){
-        var name = 'browser-' + i;
-        innerHTML.push('<' + name + ' v-ref:' + name + ' :' + name + '-req.sync="req" :' + name + '-env.sync="env"></' + name + '>');
-        result[name] = browserComponent(name, options[i], toolbarComponent);
-    }
-    simplize.$root.innerHTML = '<div class="web-browsers">' + innerHTML.join('') + '</div><toolbar v-ref:toolbar></toolbar>';
-    return result;
 }
