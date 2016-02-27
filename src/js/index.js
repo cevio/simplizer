@@ -16,6 +16,14 @@ simplize.ready(function() {
         console.log('pass');
     });
 
+    app.$toolbar.$on('active', function(){
+        console.log('toolbar active');
+    });
+
+    app.$toolbar.$on('unactive', function(){
+        console.log('toolbar unactive');
+    });
+
     var indexBrowser = app.$browser('index');
     var aWebview = indexBrowser.$webview('a');
     var headbar = indexBrowser.$headbar;

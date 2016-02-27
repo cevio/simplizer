@@ -98,6 +98,18 @@ exports.component = {
                 that.open = true;
                 that.temp.open = false;
             });
+        },
+        $reset: function(){
+            this.left.icon =
+            this.left.text =
+            this.right.icon =
+            this.right.text =
+            this.center.text =
+            this.class =
+            this.style = '';
+            this.left.fn =
+            this.right.fn =
+            this.center.fn = utils.noop;
         }
     },
     events: {

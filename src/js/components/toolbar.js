@@ -1,3 +1,5 @@
+var utils = require('../utils');
+var animationend = require('animationend');
 var template =
     '<div class="web-toolbar" v-if="status" :transition="\'toolbar\' | fixAnimation" v-el:tool-bar>' +
         '<ul class="clearfix">' +
@@ -59,10 +61,27 @@ exports.component = {
     },
     watch: {
         status: function(value){
+            var that = this;
             if ( !!value ){
-                this.height = this.$els.toolBar.clientHeight;
+                if ( this.$root.disableAnimation ){
+                    this.height = this.$els.toolBar.clientHeight;
+                    that.$emit('active');
+                }else{
+                    animationend(this.$els.toolBar).then(function(){
+                        that.$emit('active');
+                    });
+                    this.height = this.$els.toolBar.clientHeight;
+                }
             }else{
-                this.height = 0;
+                if ( this.$root.disableAnimation ){
+                    this.height = 0;
+                    that.$emit('active');
+                }else{
+                    animationend(this.$els.toolBar).then(function(){
+                        that.$emit('unactive');
+                    });
+                    this.height = 0;
+                }
             }
         }
     }
