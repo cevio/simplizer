@@ -34,7 +34,7 @@ function resize(){
     }
 
     resource.env.viewType = baseWidth;
-    resource.env.viewScale = percent;
+    resource.env.viewScale = Number(percent);
 
     keeper.push('width=' + (width > baseWidth ? baseWidth : 'device-width'));
     //isAndroid && keeper.push('target-densitydpi=high-dpi');

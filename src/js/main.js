@@ -11,11 +11,10 @@ var querystrings = require('querystrings');
 var utils = require('./utils');
 var resource = require('./resource');
 var toolbar = require('./components/toolbar');
-var headbar = require('./components/headbar');
-var browser = require('./application/browser');
-var webviews = require('./application/webviews');
+var browserComponent = require('./components/browser');
 var redirect = require('./application/redirect');
 var directiveRedirect = require('./directives/redirect');
+var browser = require('./application/browser');
 var next = require('./next');
 var layer = require('./application/layer');
 var keeper = require('./application/session');
@@ -163,7 +162,7 @@ simplize.init = function(){
 
     resource.req = result;
 
-    os(simplize);
+    os();
     simplize.session();
     utils.setURI(sessions, result.href);
 
@@ -296,109 +295,9 @@ function createRoot(){
 function fixConfigs(options){
     var result = {}, innerHTML = [];
     for ( var i in options ){
-        var name = 'browser-' + i, data = { status: false };
+        var name = 'browser-' + i;
         innerHTML.push('<' + name + ' v-ref:' + name + ' :' + name + '-req.sync="req" :' + name + '-env.sync="env"></' + name + '>');
-
-        (function(_options, database){
-
-            result[name] = _options;
-            toolbar.tbfix(result[name], database);
-
-            var webviewWraper = webviews.wrapWebviewHTML(result[name].webviews || {});
-            var mode = _options.keepAlive ? 'v-show="status"' : 'v-if="status"';
-            result[name].template = '<div class="web-browser" ' + mode + ' :transition="\'fade\' | fixAnimation"><headbar v-ref:headbar></headbar><div class="web-views">' + webviewWraper.html + '</div></div>';
-            result[name].components = webviewWraper.result;
-            result[name].components.headbar = result[name].headbar || headbar.component;
-
-            /**
-             * extend props objects
-             */
-            result[name].props = [name + '-req', name + '-env'];
-            var camelizeReq = utils.camelize(name + '-req');
-            var camelizeEnv = utils.camelize(name + '-env');
-
-            /**
-             * extend computed objects
-             */
-            var computeds = {
-                req: {
-                    set: function(value){ this[camelizeReq] = value; },
-                    get: function(){ return this[camelizeReq]; }
-                },
-                env: {
-                    set: function(value){ this[camelizeEnv] = value; },
-                    get: function(){ return this[camelizeEnv]; }
-                },
-                $toolbar: function(){
-                    return this.$root.$toolbar;
-                }
-            }
-            if ( _options.keepAlive ){
-                computeds.$headbar = function(){
-                    return this.$refs.headbar;
-                }
-            }
-            utils.$extend(computeds, _options.computed || {});
-            result[name].computed = computeds;
-
-            /**
-             * extend method objects
-             */
-            var methods = {
-                $webview: webviews.get,
-                $run: browser.run,
-                $use: browser.use,
-                $active: browser.active,
-                $render: browser.render,
-                $route: browser.route,
-                $redirect: browser.redirect
-            }
-            utils.$extend(methods, _options.methods || {});
-            result[name].methods = methods;
-
-            /**
-             * extend event objects
-             */
-            var events = {
-                end: function(){
-                    this.$nextcb && this.$nextcb();
-                },
-                hideHeadbar: function(){
-                    this.$broadcast('hideHeadbar');
-                },
-                showHeadbar: function(height){
-                    this.$broadcast('showHeadbar', height);
-                },
-                initHeadbar: function(height){
-                    this.$broadcast('initHeadbar', height);
-                }
-            }
-            utils.$extend(events, _options.events || {});
-            result[name].events = events;
-
-            /**
-             * extend watch objects
-             */
-            var watches = {
-                "status": function(value){
-                    var app = this.$parent;
-                    if ( value ){
-                        app.$ActiveBrowser = this;
-                    }else{
-                        var webview = this.$ActiveWebview;
-                        if ( webview ){
-                            webview.status = false;
-                        }
-                    }
-                }
-            }
-            utils.$extend(watches, _options.watch || {});
-            result[name].watch = watches;
-
-            utils.$extend(database, _options.data || {});
-            result[name].data = function(){ return database; }
-
-        }).call(this, options[i], data);
+        result[name] = browserComponent(name, options[i], toolbarComponent);
     }
     simplize.$root.innerHTML = '<div class="web-browsers">' + innerHTML.join('') + '</div><toolbar v-ref:toolbar></toolbar>';
     return result;
