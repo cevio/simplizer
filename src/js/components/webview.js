@@ -95,29 +95,3 @@ module.exports = function(name, options, item){
          html: html
      }
 }
-
-function hideHeadbar(){
-    var that = this;
-    var browser = this.$parent;
-    utils.nextTick(function(){
-        var current = browser.$ActiveWebview;
-        if ( current == that ){
-            browser.$headbar.$emit('hide', browser, that);
-        }
-    });
-}
-
-function showHeadbar(height){
-    var that = this;
-    var browser = this.$parent;
-    utils.nextTick(function(){
-        var current = browser.$ActiveWebview;
-        if ( current == that ){
-            browser.$headbar.$emit('show', browser, that, height);
-        }
-    });
-}
-
-function initHeadbar(height){
-    this.$headbar.$emit('show', this.$parent, this, height);
-}

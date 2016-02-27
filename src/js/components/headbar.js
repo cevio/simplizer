@@ -103,8 +103,6 @@ exports.component = {
     events: {
         left: function(){ this.move('left'); },
         right: function(){ this.move('right'); },
-        hide: function(browser, webview){ this.paddingTop(webview, 0); },
-        show: function(browser, webview, height){ this.paddingTop(webview, height); },
         before: function(){
             this.temp.left.icon = this.left.icon;
             this.temp.left.text = this.left.text;
