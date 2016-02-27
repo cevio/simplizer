@@ -2,9 +2,7 @@ var utils = require('../utils');
 var redirect = require('../application/redirect');
 module.exports = function(name, options, item){
     var result = {}, html;
-    var data = { status: false, direction: 'slient' };
-    var camelizeReq = utils.camelize(name + '-req');
-    var camelizeEnv = utils.camelize(name + '-env');
+    var data = { status: false, direction: 'slient', HeadbarHeight: 0, ToolbarHeight: 0 };
     var ignores = ['name', 'data', 'keepAlive', 'template', 'computed', 'watch', 'methods', 'events'];
 
     result.name= 'webviw';
@@ -23,13 +21,8 @@ module.exports = function(name, options, item){
      }
      var template = utils.getTemplate(options.template || "template[name='" + item + "']");
      var mode = options.keepAlive ? 'v-show="status"' : 'v-if="status"';
-     html = '<' + name + ' v-ref:' + name + ' :' + name + '-req.sync="req" :' + name + '-env.sync="env"></' + name + '>';
-     result.template = '<div class="web-view" ' + mode + ' transition="move" :class="direction | fixAnimation">' + template + '</div>';
-
-     /**
-      *  extend props
-      */
-     result.props = [name + '-req', name + '-env'];
+     html = '<' + name + ' v-ref:' + name + '></' + name + '>';
+     result.template = '<div class="web-view" ' + mode + ' transition="move" :class="direction | fixAnimation" :style="{paddingTop: HeadbarHeight,paddingBottom:ToolbarHeight}">' + template + '</div>';
 
      /**
       *  extend computed objects
@@ -37,12 +30,12 @@ module.exports = function(name, options, item){
      result.computed = options.computed || {};
      var computeds = {
          req: {
-             set: function(value){ this[camelizeReq] = value; },
-             get: function(){ return this[camelizeReq]; }
+             set: function(value){ this.$root.req = value; },
+             get: function(){ return this.$root.req; }
          },
          env: {
-             set: function(value){ this[camelizeEnv] = value; },
-             get: function(){ return this[camelizeEnv]; }
+             set: function(value){ this.$root.env = value; },
+             get: function(){ return this.$root.env; }
          },
          $headbar: function(){
              return this.$parent.$headbar;
@@ -81,9 +74,13 @@ module.exports = function(name, options, item){
       */
      result.events = options.events || {};
      var events = {
-         hideHeadbar: hideHeadbar,
-         showHeadbar: showHeadbar,
-         initHeadbar: initHeadbar
+         beforeload: function(){
+             var that = this;
+             utils.nextTick(function(){
+                 that.HeadbarHeight = that.$headbar.height;
+                 that.ToolbarHeight = that.$toolbar.height;
+             });
+         }
      }
      utils.$extend(result.events, events);
 

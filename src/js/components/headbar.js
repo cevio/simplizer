@@ -36,6 +36,7 @@ exports.component = {
             center: { text: '', fn: utils.noop },
             class: '',
             style: '',
+            height: 0,
 
             useItemAnimation: true,
             direction: '', // 动画方向
@@ -67,67 +68,43 @@ exports.component = {
 
                 animationend(el).then(function(){
                     that.temp.transition = '';
-                    utils.nextTick(function(){
-                        that.show = true;
-                        that.temp.show = false;
-                        that.direction = '';
-                        that.transition1 = '';
-                        that.transition2 = '';
-                        that.open = true;
-                        that.temp.open = false;
-                        that.useItemAnimation = true;
-                    })
+                    that.show = true;
+                    that.temp.show = false;
+                    that.direction = '';
+                    that.transition1 = '';
+                    that.transition2 = '';
+                    that.open = true;
+                    that.temp.open = false;
+                    that.useItemAnimation = true;
                 });
+            });
+        },
+        move: function(direction){
+            var that = this;
+            this.show = true;
+            this.temp.show = true;
+            this.direction = direction;
+            this.transition1 = '';
+            this.transition2 = '';
+            this.temp.transition = 'headbarTemp';
+            this.open = false;
+            this.temp.open = true;
+            utils.nextTick(function(){
+                that.listen();
+                if ( that.useItemAnimation ){
+                    that.transition1 = 'headbarChild';
+                    that.transition2 = 'headbarFaded';
+                }
+                that.open = true;
+                that.temp.open = false;
             });
         }
     },
     events: {
-        left: function(){
-            var that = this;
-
-            this.show = true;
-            this.temp.show = true;
-            this.direction = 'left';
-            this.transition1 = '';
-            this.transition2 = '';
-            this.temp.transition = 'headbarTemp';
-            this.open = false;
-            this.temp.open = true;
-
-
-            utils.nextTick(function(){
-                that.listen();
-                if ( that.useItemAnimation ){
-                    that.transition1 = 'headbarChild';
-                    that.transition2 = 'headbarFaded';
-                }
-                that.open = true;
-                that.temp.open = false;
-            });
-        },
-        right: function(){
-            var that = this;
-
-            this.show = true;
-            this.temp.show = true;
-            this.direction = 'right';
-            this.transition1 = '';
-            this.transition2 = '';
-            this.temp.transition = 'headbarTemp';
-            this.open = false;
-            this.temp.open = true;
-
-
-            utils.nextTick(function(){
-                that.listen();
-                if ( that.useItemAnimation ){
-                    that.transition1 = 'headbarChild';
-                    that.transition2 = 'headbarFaded';
-                }
-                that.open = true;
-                that.temp.open = false;
-            });
-        },
+        left: function(){ this.move('left'); },
+        right: function(){ this.move('right'); },
+        hide: function(browser, webview){ this.paddingTop(webview, 0); },
+        show: function(browser, webview, height){ this.paddingTop(webview, height); },
         before: function(){
             this.temp.left.icon = this.left.icon;
             this.temp.left.text = this.left.text;
@@ -136,25 +113,21 @@ exports.component = {
             this.temp.center.text = this.center.text;
             this.temp.class = this.class;
             this.temp.style = this.style;
-        },
-        hide: function(browser, webview){
-            webview.$el.style.paddingTop = 0;
-        },
-        show: function(browser, webview, height){
-            webview.$el.style.paddingTop = height;
         }
     },
     ready: function(){
         this.$parent.$headbar = this;
-        this.status && this.$parent.$emit('initHeadbar', this.$el.nextSibling.clientHeight);
+        if ( this.status ){
+            this.height = this.$el.nextSibling.clientHeight;
+        }
     },
     watch: {
         "status": function(value){
             if ( !!value ){
-                this.$parent.$emit('showHeadbar', this.$el.nextSibling.clientHeight);
+                this.height = this.$el.nextSibling.clientHeight;
                 this.useItemAnimation = false;
             }else{
-                this.$parent.$emit('hideHeadbar');
+                this.height = 0;
             }
         }
     }

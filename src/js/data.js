@@ -3,6 +3,7 @@ module.exports = {
         title: "首页",
         icon: '<i class="fa fa-home"></i>',
         url: '/',
+        order: 1,
         webviews: {
             a: {
                 data: {
@@ -44,8 +45,18 @@ module.exports = {
         title: '李彪爷',
         icon: '<i class="fa fa-home"></i>',
         url: '/c',
+        order: 2,
         webviews: {
             c: {}
+        }
+    },
+    "bs": {
+        title: '测试',
+        icon: '<i class="fa fa-list"></i>',
+        url: '/d',
+        order: 3,
+        webviews: {
+            d: {}
         }
     }
 }

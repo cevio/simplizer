@@ -7,6 +7,7 @@ var querystrings = require('querystrings');
 var animationend = require('animationend');
 var Promise = require('es6-promise').Promise;
 var pathToRegExp = require('path-to-regexp');
+var fastClick = require('fastclick');
 
 /**
  *  load deps.
@@ -80,7 +81,9 @@ simplize.querystring = querystrings;
 simplize.Promise = Promise;
 simplize.pathToRegExp = pathToRegExp;
 simplize.routeLayer = layer;
+simplize.fastClick = fastClick;
 simplize.$toolbar = null;
+simplize.redirect = redirect;
 
 simplize.plugin = function(object){
     if ( typeof object.install === 'function' ){
@@ -100,6 +103,7 @@ simplize.ready = function(cb){
     domReady(function(){
         simplize.$root = utils.createRoot();
         simplize.$html = utils.$query(document, 'html');
+        fastClick(document.body);
         cb();
     });
 };

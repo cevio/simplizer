@@ -44,7 +44,7 @@ exports.render = function(name, direction, foo){
         }
     }
     var app = this.$parent;
-    var oldbrowser = app.$ActiveBrowser;
+    var oldbrowser = app.ActiveBrowser;
     var newBrowser = this;
     var oldwebview;
     if ( oldbrowser ){
@@ -54,6 +54,7 @@ exports.render = function(name, direction, foo){
         oldbrowser.status = false;
     }
     newBrowser.status = true;
+
 
     utils.nextTick(function(){
         var webview = newBrowser.$webview(name);

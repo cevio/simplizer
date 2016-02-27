@@ -19,12 +19,16 @@ module.exports = function(oldbrowser, newBrowser, oldwebview, webview, direction
         $headbar.$emit('before');
     }
 
+
     if ( typeof before === 'function' ){
         _in = before.call(webview);
         if ( _in === false ){
             canin = false;
         }
     }
+
+    webview.$emit('beforeload');
+    oldwebview && oldwebview.$emit('beforeunload');
 
     if ( !oldbrowser || oldbrowser != newBrowser ){
         if ( canin ){
@@ -81,11 +85,13 @@ function load($headbar, webview, after){
         typeof keep.temp === 'function' && keep.temp();
         webview.$emit('load');
         typeof after === 'function' && after.call(webview);
+        webview.direction = '';
         $headbar && $headbar.$emit('after');
     });
 }
 function unload(webview){
     animationend(webview.$el).then(function(){
+        webview.direction = '';
         webview.$emit('unload');
     });
 }

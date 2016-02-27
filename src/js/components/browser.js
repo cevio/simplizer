@@ -8,8 +8,6 @@ module.exports = function(name, options, toolbar){
     var data = { status: false };
     var webviewCreater = webview.create(options.webviews || {});
     var mode = options.keepAlive ? 'v-show="status"' : 'v-if="status"';
-    var camelizeReq = utils.camelize(name + '-req');
-    var camelizeEnv = utils.camelize(name + '-env');
     var ignores = ['name', 'template', 'components', 'props', 'computed', 'keepAlive', 'methods', 'events', 'watch', 'data', 'webviews', 'headbar'];
 
     toolbar.fix(options, data);
@@ -28,22 +26,17 @@ module.exports = function(name, options, toolbar){
     utils.$extend(result.components, webviewCreater.result);
 
     /**
-     * extend props objects
-     */
-    result.props = [name + '-req', name + '-env'];
-
-    /**
      * extend computed objects
      */
     result.computed = options.computed || {};
     var computeds = {
         req: {
-            set: function(value){ this[camelizeReq] = value; },
-            get: function(){ return this[camelizeReq]; }
+            set: function(value){ this.$root.req = value; },
+            get: function(){ return this.$root.req; }
         },
         env: {
-            set: function(value){ this[camelizeEnv] = value; },
-            get: function(){ return this[camelizeEnv]; }
+            set: function(value){ this.$root.env = value; },
+            get: function(){ return this.$root.env; }
         },
         $toolbar: function(){
             return this.$root.$toolbar;
@@ -78,15 +71,6 @@ module.exports = function(name, options, toolbar){
     var events = {
         end: function(){
             this.$nextcb && this.$nextcb();
-        },
-        hideHeadbar: function(){
-            this.$broadcast('hideHeadbar');
-        },
-        showHeadbar: function(height){
-            this.$broadcast('showHeadbar', height);
-        },
-        initHeadbar: function(height){
-            this.$broadcast('initHeadbar', height);
         }
     }
     utils.$extend(result.events, events);
@@ -99,8 +83,10 @@ module.exports = function(name, options, toolbar){
         "status": function(value){
             var app = this.$parent;
             if ( value ){
-                app.$ActiveBrowser = this;
+                app.ActiveBrowser = this;
+                this.$emit('active');
             }else{
+                this.$emit('unactive');
                 var webview = this.$ActiveWebview;
                 if ( webview ){
                     webview.status = false;
@@ -115,6 +101,10 @@ module.exports = function(name, options, toolbar){
      */
     utils.$extend(data, options.data || {});
     result.data = function(){ return data; }
+
+    result.created = function(){
+        this.$isBrowser = true;
+    }
 
     for ( var opt in options ){
         if ( ignores.indexOf(opt) == -1 ){

@@ -5,3 +5,4 @@ exports.env = {
     viewType: 'normal',
     viewScale: 1
 };
+exports.ActiveBrowser = null;
