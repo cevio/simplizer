@@ -22,7 +22,7 @@ module.exports = function(name, options, item){
      var template = utils.getTemplate(options.template || "template[name='" + item + "']");
      var mode = options.keepAlive ? 'v-show="status"' : 'v-if="status"';
      html = '<' + name + ' v-ref:' + name + '></' + name + '>';
-     result.template = '<div class="web-view" ' + mode + ' transition="move" :class="direction | fixAnimation" :style="{paddingTop: HeadbarHeight,paddingBottom:ToolbarHeight}">' + template + '</div>';
+     result.template = '<div class="web-view" ' + mode + ' transition="move" :class="direction | fixAnimation" :style="{paddingTop: HeadbarHeight,paddingBottom:ToolbarHeight}"><div class="web-view-content">' + template + '</div></div>';
 
      /**
       *  extend computed objects
