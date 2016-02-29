@@ -28,10 +28,11 @@ exports.computed = {
             if ( !!value ){
                 if ( typeof windowTouchMoveDisabledEventFunction != 'function' ){
                     windowTouchMoveDisabledEventFunction = utils.stop;
-                    Vue.util.on(window, 'touchmove', windowTouchMoveDisabledEventFunction);
+                    utils.on(window, 'touchmove', windowTouchMoveDisabledEventFunction);
                 }
             }else{
-                Vue.util.off(window, 'touchmove', windowTouchMoveDisabledEventFunction);
+                if ( typeof windowTouchMoveDisabledEventFunction !== 'function' ) return;
+                utils.off(window, 'touchmove', windowTouchMoveDisabledEventFunction);
                 windowTouchMoveDisabledEventFunction = null;
             }
         }
