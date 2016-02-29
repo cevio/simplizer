@@ -3,8 +3,8 @@ var animationend = require('animationend');
 exports.component = {
     name: 'headbar',
     template:
-        '<div class="web-headbar" v-if="status" :transition="transition3 | fixAnimation">' +
-            '<div class="web-head" :class="class" :style="style" v-show="show">' +
+        '<div class="web-headbar" v-if="status" :transition="transition3 | fixAnimation" v-el:head-out>' +
+            '<div class="web-head" :class="class" :style="style" v-show="show" v-el:head-bar>' +
                 '<div class="web-headbar-left" @click="left.fn">' +
                     '<div class="icon-content" v-html="left.icon" v-if="open" :transition="transition2 | fixAnimation" :class="direction"></div>' +
                     '<div class="text-content" v-html="left.text" v-if="open" :transition="transition1 | fixAnimation" :class="direction"></div>' +
@@ -36,6 +36,7 @@ exports.component = {
             center: { text: '', fn: utils.noop },
             class: '',
             style: '',
+            height: 0,
 
             useItemAnimation: true,
             direction: '', // 动画方向
@@ -60,72 +61,60 @@ exports.component = {
     methods: {
         listen: function(){
             var that = this;
-            utils.nextTick(listen);
-            function listen(){
-                var el = that.useItemAnimation ? that.$el.nextSibling.querySelector('.web-head') : that.$el.nextSibling;
+            utils.nextTick(function(){
+                var el = that.useItemAnimation
+                    ? that.$els.headBar
+                    : that.$els.headOut;
+
                 animationend(el).then(function(){
                     that.temp.transition = '';
-                    utils.nextTick(function(){
-                        that.show = true;
-                        that.temp.show = false;
-                        that.direction = '';
-                        that.transition1 = '';
-                        that.transition2 = '';
-                        that.open = true;
-                        that.temp.open = false;
-                        that.useItemAnimation = true;
-                    })
+                    that.show = true;
+                    that.temp.show = false;
+                    that.direction = '';
+                    that.transition1 = '';
+                    that.transition2 = '';
+                    that.open = true;
+                    that.temp.open = false;
+                    that.useItemAnimation = true;
                 });
-            }
+            });
+        },
+        move: function(direction){
+            var that = this;
+            this.show = true;
+            this.temp.show = true;
+            this.direction = direction;
+            this.transition1 = '';
+            this.transition2 = '';
+            this.temp.transition = 'headbarTemp';
+            this.open = false;
+            this.temp.open = true;
+            utils.nextTick(function(){
+                that.listen();
+                if ( that.useItemAnimation ){
+                    that.transition1 = 'headbarChild';
+                    that.transition2 = 'headbarFaded';
+                }
+                that.open = true;
+                that.temp.open = false;
+            });
+        },
+        $reset: function(){
+            this.left.icon =
+            this.left.text =
+            this.right.icon =
+            this.right.text =
+            this.center.text =
+            this.class =
+            this.style = '';
+            this.left.fn =
+            this.right.fn =
+            this.center.fn = utils.noop;
         }
     },
     events: {
-        left: function(){
-            var that = this;
-
-            this.show = true;
-            this.temp.show = true;
-            this.direction = 'left';
-            this.transition1 = '';
-            this.transition2 = '';
-            this.temp.transition = 'headbarTemp';
-            this.open = false;
-            this.temp.open = true;
-
-
-            utils.nextTick(function(){
-                that.listen();
-                if ( that.useItemAnimation ){
-                    that.transition1 = 'headbarChild';
-                    that.transition2 = 'headbarFaded';
-                }
-                that.open = true;
-                that.temp.open = false;
-            });
-        },
-        right: function(){
-            var that = this;
-
-            this.show = true;
-            this.temp.show = true;
-            this.direction = 'right';
-            this.transition1 = '';
-            this.transition2 = '';
-            this.temp.transition = 'headbarTemp';
-            this.open = false;
-            this.temp.open = true;
-
-
-            utils.nextTick(function(){
-                that.listen();
-                if ( that.useItemAnimation ){
-                    that.transition1 = 'headbarChild';
-                    that.transition2 = 'headbarFaded';
-                }
-                that.open = true;
-                that.temp.open = false;
-            });
-        },
+        left: function(){ this.move('left'); },
+        right: function(){ this.move('right'); },
         before: function(){
             this.temp.left.icon = this.left.icon;
             this.temp.left.text = this.left.text;
@@ -134,25 +123,21 @@ exports.component = {
             this.temp.center.text = this.center.text;
             this.temp.class = this.class;
             this.temp.style = this.style;
-        },
-        hide: function(browser, webview){
-            webview.$el.style.paddingTop = 0;
-        },
-        show: function(browser, webview, height){
-            webview.$el.style.paddingTop = height;
         }
     },
     ready: function(){
         this.$parent.$headbar = this;
-        this.status && this.$parent.$emit('initHeadbar', this.$el.nextSibling.clientHeight);
+        if ( this.status ){
+            this.height = this.$el.nextSibling.clientHeight;
+        }
     },
     watch: {
         "status": function(value){
             if ( !!value ){
-                this.$parent.$emit('showHeadbar', this.$el.nextSibling.clientHeight);
+                this.height = this.$el.nextSibling.clientHeight;
                 this.useItemAnimation = false;
             }else{
-                this.$parent.$emit('hideHeadbar');
+                this.height = 0;
             }
         }
     }
