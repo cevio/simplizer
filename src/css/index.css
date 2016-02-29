@@ -15,9 +15,6 @@ html,body,.web-app,.web-browsers,.web-browser,.web-views{
     background-color: #fff;
 }
 
-.web-view{
-    overflow-y: auto;
-}
 .web-view, pre{
     word-wrap: break-word;
     word-break: normal;
