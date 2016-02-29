@@ -1,6 +1,6 @@
 /* your code here */
 *{ box-sizing: border-box; }
-html,body,.web-app,.web-browsers,.web-browser,.web-views,.web-view{
+html,body,.web-app,.web-browsers,.web-browser,.web-views{
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -15,10 +15,6 @@ html,body,.web-app,.web-browsers,.web-browser,.web-views,.web-view{
     background-color: #fff;
 }
 
-.web-view{
-    overflow: auto;
-    overflow-x: hidden;
-}
 .web-view, pre{
     word-wrap: break-word;
     word-break: normal;
@@ -163,9 +159,23 @@ html,body,.web-app,.web-browsers,.web-browser,.web-views,.web-view{
     animation: rightIn 350ms forwards;
 }
 .move-leave.right{
+    position: relative;
     z-index: 2;
     animation: rightOut 350ms forwards;
 }
+
+.move-leave.right:after,.move-enter.left:after{
+    display: block;
+    position: absolute;
+    content: ' ';
+    left: -48px;
+    top: 0;
+    height: 100%;
+    width: 48px;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0.01) 50%, rgba(0, 0, 0, 0.2) 100%);
+}
+
+
 /*@keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -176,34 +186,42 @@ html,body,.web-app,.web-browsers,.web-browser,.web-views,.web-view{
 }*/
 @keyframes leftIn{
     from {
+
         transform: translate3d(100%, 0, 0);
     }
     to{
+
         transform: translate3d(0,0,0);
     }
 }
 @keyframes leftOut{
     from {
+      opacity: 1;
         transform: translate3d(0, 0, 0);
     }
     to{
+      opacity: 0.9;
         transform: translate3d(-20%,0,0);
     }
 }
 
 @keyframes rightIn{
     from {
+      opacity: 0.9;
         transform: translate3d(-20%, 0, 0);
     }
     to{
+      opacity: 1;
         transform: translate3d(0,0,0);
     }
 }
 @keyframes rightOut{
     from {
+
         transform: translate3d(0, 0, 0);
     }
     to{
+
         transform: translate3d(100%,0,0);
     }
 }
