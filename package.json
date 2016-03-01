@@ -1,12 +1,12 @@
 {
-  "name": "simplize",
-  "description": "simplize project",
-  "version": "0.0.52",
+  "name": "simplizer",
+  "description": "simplizer project",
+  "version": "0.1.0",
   "keywords": [],
   "main": "build/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cevio/simplize"
+    "url": "https://github.com/cevio/simplizer"
   },
   "timestamp": 1451374986581,
   "dependencies": {
